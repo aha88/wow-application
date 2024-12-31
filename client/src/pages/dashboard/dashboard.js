@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useState } from 'react';
-import {customersData, sessionV, tokenV } from '@/store/authuser';
+import {customersData,userData, sessionV, userID, tokenV } from '@/store/authuser';
 import  { useRouter } from 'next/router';
 import { CCardTitle, CCol, CContainer, CRow } from '@coreui/react';
-import userService from '../../services/userService'; 
-import MyCounter from '@/component/MyCounter';
+import companiesService from '../../services/companiesService'; 
 import MyDataTable from '@/component/MyDataTable';
-
+import MyCounter from '@/component/MyCounter';
+ 
 
 const Dashboard = () => {
     const [data, setData] = useState([]);
@@ -16,17 +16,22 @@ const Dashboard = () => {
     const router = useRouter();
 
     useEffect(() => {
+        const storedToken = sessionStorage.getItem('tk');
+        if (storedToken) {
+            tokenV.value = storedToken;  
+        }
+    }, []);
+
+    useEffect(() => {
         if (customersData.value == null ){
 
-            const fetchUserData = async () => {
+            const fetchCompanyData = async () => {
                 setLoading(true);
                 const token = tokenV.value ?? sessionStorage.getItem('tk');
-                const id= sessionStorage.getItem('id');
-
                 try {
-                    const userData = await userService.fetchUserData(id, token);  // Call the service
-                    setData(userData);  
-                    customersData.value = userData
+                    const companiesData = await companiesService.fetchCompaniesData(token);  // Call the service
+                    setData(companiesData);
+                    customersData.value = companiesData
                 } catch (err) {
                     setError(err.message);  // Set error state
                 } finally {
@@ -34,9 +39,16 @@ const Dashboard = () => {
                 }
             };
             
-            fetchUserData();
+            fetchCompanyData();
         }
-    }, [sessionV.value, tokenV.value, router,loading]);
+    }, [sessionV.value, tokenV.value, router,loading],data);
+
+    const handleDelete = () => {
+
+    }
+    const handleview = () => {
+
+    }
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p className="text-danger">{error}</p>;
@@ -47,24 +59,19 @@ const Dashboard = () => {
                 <CRow className='mt-3'>
                     <CCol md={12}>
                         <CCardTitle>
-                            <h2>
                                 Dashboard
-                            </h2>
                         </CCardTitle>
                     </CCol>
                 </CRow>
-                <CRow>
-                        <MyCounter title="Leave" number={50} btn={true}/>
-                        <MyCounter title="Leave Entitlement" number={50} btn={true}/>
-                        <MyCounter title="Taken" number={50} btn={true}/>
-                        <MyCounter title="Balance" number={50} btn={true}/>
-                </CRow>
 
                 <CRow>
+                    <CCol>
+                    </CCol>
+                </CRow>
+               
+                <CRow>
                     <CCol md={12}>
-                        <MyDataTable
-                            data={data}
-                        />
+                        <MyDataTable data={data.data} onDelete={handleDelete} onView={handleview} />
                     </CCol>
                 </CRow>
 

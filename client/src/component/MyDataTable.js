@@ -1,36 +1,38 @@
-import { CBadge, CButton } from '@coreui/react';
 import React, { useMemo } from 'react';
 import { useTable, useSortBy } from 'react-table';
+import { CBadge, CButton } from '@coreui/react';
 import Swal from 'sweetalert2';
-import { customersData, tokenV } from '@/store/authuser';
-import axios from 'axios';
 
-const MyDataTable = ({  onDelete, onEdit }) => {
-
-  const data = customersData.value;
+const MyDataTable = ({ data, onDelete, onView }) => {
   // Memoize the columns to prevent unnecessary re-renders
   const columns = useMemo(
     () => [
       { Header: 'ID', accessor: 'id' },
       { Header: 'Name', accessor: 'name' },
-      { Header: 'Birth of Date', accessor: 'birth_of_date' },
-      { Header: 'National ID', accessor: 'national_id' },
-      { Header: 'Status',  Cell: ({ row }) => ( 
-        
-        row.original.status_id == 1 ?
-        <CBadge textBgColor="warning">Pending</CBadge>:
-        row.original.status_id == 2 ?
-        <CBadge textBgColor="success">Approved</CBadge> :
-        row.original.status_id == 3 ?
-        <CBadge textBgColor="danger">Rejected</CBadge>:''
-           
-        ), },
+      { Header: 'Email', accessor: 'email' },
+      {
+        Header: 'Status',
+        Cell: ({ row }) => {
+          const { status } = row.original; // Access status object
+          if (!status) return null; // Handle missing status
+
+          // Map status ID to a badge
+          const statusMapping = {
+            1: { color: 'success', text: 'Approved' },
+            2: { color: 'warning', text: 'Pending' },
+            3: { color: 'danger', text: 'Rejected' },
+          };
+
+          const { color, text } = statusMapping[status.id] || {};
+          return color ? <CBadge color={color}>{text}</CBadge> : null;
+        },
+      },
       {
         Header: 'Actions',
         Cell: ({ row }) => (
           <div>
-            <CButton className="mr-2" color="secondary" onClick={() => onEdit(row.original)}>
-              Edit
+            <CButton className="mr-2" color="secondary" onClick={() => onView(row.original)}>
+              View
             </CButton>
             <CButton className="mr-2" color="danger" onClick={() => confirmDelete(row.original)}>
               Delete
@@ -39,9 +41,10 @@ const MyDataTable = ({  onDelete, onEdit }) => {
         ),
       },
     ],
-    [onEdit, onDelete]
+    [onView, onDelete]
   );
 
+  // Confirm delete action
   const confirmDelete = (item) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -58,68 +61,60 @@ const MyDataTable = ({  onDelete, onEdit }) => {
     });
   };
 
+  // Handle delete action
   const handleDelete = async (item) => {
-    if (item) {
-      const token = tokenV.value;
-      try {
-         await axios.post(`/api/delete_cust`, { id: item.id }, {
-          headers: {
-            'x-token': token,
-          },
-        });
-        
-        const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
-          Toast.fire({
-            icon: "success",
-            title: "Deleted is successful"
-          });
+    try {
+      // Simulate delete operation (replace with actual API call if needed)
+      console.log('Deleting item:', item);
 
-        onDelete(item); 
-      } catch (error) {
-        console.error('Error during delete operation:', error);
-      }
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Item deleted successfully',
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
+      onDelete(item); // Notify parent component
+    } catch (error) {
+      console.error('Error during delete operation:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!',
+      });
     }
   };
 
-  // Memoize the useTable hook to prevent unnecessary recalculations on every render
+  // Use react-table hooks
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
-    {
-      columns, // Memoized columns
-      data, // Memoized or default data
-    },
+    { columns, data },
     useSortBy
   );
 
   return (
-    <table {...getTableProps()} >
+    <table {...getTableProps()} className="table table-striped table-hover">
       <thead>
-        {headerGroups.map((headerGroup, i) => (
-          <tr {...headerGroup.getHeaderGroupProps()} key={i}>
+        {headerGroups.map((headerGroup, index) => (
+          <tr {...headerGroup.getHeaderGroupProps()} key={index}>
             {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()} key={column.id}>
+              <th {...column.getHeaderProps(column.getSortByToggleProps())} key={column.id}>
                 {column.render('Header')}
+                <span>
+                  {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
+                </span>
               </th>
             ))}
           </tr>
         ))}
       </thead>
       <tbody {...getTableBodyProps()}>
-        {rows.map((row,i) => {
+        {rows.map((row, index) => {
           prepareRow(row);
           return (
-            <tr {...row.getRowProps()} key={i}>
-              {row.cells.map((cell, i) => (
-                <td {...cell.getCellProps()} key={i}>
+            <tr {...row.getRowProps()} key={index}>
+              {row.cells.map((cell, index) => (
+                <td {...cell.getCellProps()} key={index}>
                   {cell.render('Cell')}
                 </td>
               ))}

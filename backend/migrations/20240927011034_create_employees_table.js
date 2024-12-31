@@ -3,19 +3,23 @@
  * @returns { Promise<void> }
  */
 exports.up = function(knex) {
-    return knex.schema.createTable('users', function(table) {
+    return knex.schema.createTable('employees', function(table) {
         table.increments('id').primary();
         table.string('name');
+        table.string('bod');
         table.string('email');
-        table.string('password');
+        table.string('phone');
+        table.string('whatapps');
+        table.string('telegram');
         table.integer('role_id');
+        table.integer('company_id');
         table.integer('status');
 
-        table.foreign('role_id').references('id').inTable('roles').onDelete('CASCADE');
+       table.foreign('company_id').references('id').inTable('companies').onDelete('CASCADE');
         table.foreign('status').references('id').inTable('status_code').onDelete('CASCADE');
 
         table.timestamps(true, true);
-      });
+    })
 };
 
 /**
@@ -23,5 +27,5 @@ exports.up = function(knex) {
  * @returns { Promise<void> }
  */
 exports.down = function(knex) {
-    return knex.schema.dropTable('users');
+    return knex.schema.dropTable('employees');
 };

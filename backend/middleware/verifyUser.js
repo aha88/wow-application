@@ -4,7 +4,6 @@ const verifyUser = async (req, res, next) => {
 
     try {
         const user = await db('users')
-            .join('employees', 'employees.user_id', 'users.id')
             .where('users.email', req.user.email)  
             .first(); 
 

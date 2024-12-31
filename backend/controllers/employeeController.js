@@ -1,72 +1,6 @@
 const db = require('../db');
 
 
-const idEmployeeLeaveHistory = async (req, res) => {
-  const { id,company } = req.params;
-  console.log(req.params)
-  
-    try{
-      const leavesK = await db('leaves_pool')
-      .select(
-          'leaves_pool.*',
-          'employees.*',
-          'leaves_pool.id as leave_id',
-          'employor.name as employor_name',
-          'employor.id as employor_id'
-        )
-        .join('employees', 'employees.id', 'leaves_pool.employee_id')
-        .join('employees as employor', 'employor.id', 'leaves_pool.employor_id')
-      .where({
-        'employees.user_id': id,
-        'leaves_pool.company_id': company
-      });                            
-  
-      const employeeLeave = leavesK.map(emp => ({
-        id: emp.leave_id,
-        name: emp.name,
-        company_id: emp.company_id,
-        employee_id: emp.employee_id,
-        duration: emp.duration,
-        start_date: emp.start_date,
-        end_date: emp.end_date,
-        reason: emp.reason,
-        attachment: emp.attachment,
-        leave_type_id: emp.leave_type_id,
-        employor_id: emp.employor_id,
-        employor_remarks: emp.employor_remarks,
-        status: emp.status,
-        created_at: emp.created_at,
-        updated_at: emp.updated_at,
-        bod: emp.bod,
-        email: emp.email,
-        phone: emp.phone,
-        whatapps: emp.whatapps,
-        telegram: emp.telegram,
-        role_id: emp.role_id,
-        designation_id: emp.designation_id,
-        department_id: emp.department_id,
-        category_id: emp.category_id,
-        employee_details_id: emp.employee_details_id,
-        user_id: emp.user_id,
-        employor: 
-        {
-          id: emp.employor_id,
-          name: emp.employor_name
-        }
-      }));
-
-      res.json({
-        status: res.statusCode,
-        data: employeeLeave,
-        length: employeeLeave.length
-      })
-  
-    } catch(error) {
-      res.json(error);
-    }
-  }
-  
-
 // get all employeee
 const getAllEmployee = async (req, res) => {
   if ([2, 3, 4].includes(req.userAccess.role_id)) {
@@ -76,57 +10,50 @@ const getAllEmployee = async (req, res) => {
     try {
         const employee = await db('employees')
         .select(
-            'employees.id as employee_id',
-            'employees.name as employee_name',
-            'employees.email as employee_email',
-            'employees.company_id',
-            'employee_details.*',
-            'departments.name as employee_dept ',
-            'designations.name as employee_design',
-            'designations.name as employee_design',
-            'roles.name as employee_role',
-        )
-        .join('employee_details', 'employee_details.id', 'employees.employee_details_id')
-        .join('departments', 'departments.id', 'employees.department_id')
-        .join('categories', 'categories.id', 'employees.category_id')
-        .join('roles', 'roles.id', 'employees.role_id')
-        .join('designations', 'designations.id', 'employees.designation_id');
-    
-        const transformedEmployee = employee.map(emp => ({
-            id: emp.employee_id,
-            name: emp.employee_name,
-            email: emp.employee_email,
-            company_id: emp.company_id,
-            whatapps: emp.whatapps,
-            telegram: emp.telegram,
-            role_id: emp.role_id,
-            designation_id: emp.employee_design,
-            department_id: emp.employee_dept,
-            role_id: emp.employee_role,
-            employee_details: {
-                id: emp.id,  
-                address1: emp.address1,
-                address2: emp.address2,
-                postcode: emp.postcode,
-                city: emp.city,
-                country: emp.country,
-                email: emp.email,
-                phone: emp.phone,
-                handphone: emp.handphone,
-            }
-        }));
-        
-          const dt = {
-            status: res.statusCode,
-            data: transformedEmployee,
-            length: transformedEmployee.length,
-          };
+          'employees.id as employee_id',
+          'employees.name as employee_name',
+          'employees.email as employee_email',
+          'employees.phone as employee_phone',
+          'employees.whatapps as employee_whatsapp',
+          'employees.telegram as employee_telegram',
+          'employees.role_id as employee_role_id',
+          'employees.status as employee_status',
+          'employees.company_id',
+          'employees.height',
+          'employees.weight',
+          'employees.gender',
+          'roles.name as employee_role',
+      )
+      .join('roles', 'roles.id', 'employees.role_id');
+  
+      const transformedEmployee = employee.map(emp => ({
+          id: emp.employee_id,
+          name: emp.employee_name,
+          email: emp.employee_email,
+          company_id: emp.company_id,
+          whatapps: emp.employee_whatsapp,
+          telegram: emp.employee_telegram,
+          height: emp.employee_height??0,
+          weight: emp.employee_weight??0,
+          gender: emp.employee_gender??'-',
+          role: {
+            role_id: emp.employee_role_id,
+            role_name: emp.employee_role,
+          },
+          
+      }));
       
-          res.json(dt);
+        const dt = {
+          status: res.statusCode,
+          data: transformedEmployee,
+          length: transformedEmployee.length,
+        };
+    
+    res.json(dt);
       
         } catch (error) {
-          console.error('Error retrieving employee registration:', error);
-          res.status(500).send('Error retrieving employee registration');
+          console.error('Error retrieving employee:', error);
+          res.status(500).send('Error retrieving employee');
         }
 }
 
@@ -144,18 +71,18 @@ const allEmployeeByCompany = async (req, res) => {
           'employees.id as employee_id',
           'employees.name as employee_name',
           'employees.email as employee_email',
+          'employees.phone as employee_phone',
+          'employees.whatapps as employee_whatsapp',
+          'employees.telegram as employee_telegram',
+          'employees.role_id as employee_role_id',
+          'employees.status as employee_status',
           'employees.company_id',
-          'employee_details.*',
-          'departments.name as employee_dept ',
-          'designations.name as employee_design',
-          'designations.name as employee_design',
+          'employees.height',
+          'employees.weight',
+          'employees.gender',
           'roles.name as employee_role',
       )
-      .join('employee_details', 'employee_details.id', 'employees.employee_details_id')
-      .join('departments', 'departments.id', 'employees.department_id')
-      .join('categories', 'categories.id', 'employees.category_id')
       .join('roles', 'roles.id', 'employees.role_id')
-      .join('designations', 'designations.id', 'employees.designation_id')
       .where('employees.company_id', id );
   
       const transformedEmployee = employee.map(emp => ({
@@ -163,23 +90,15 @@ const allEmployeeByCompany = async (req, res) => {
           name: emp.employee_name,
           email: emp.employee_email,
           company_id: emp.company_id,
-          whatapps: emp.whatapps,
-          telegram: emp.telegram,
-          role_id: emp.role_id,
-          designation_id: emp.employee_design,
-          department_id: emp.employee_dept,
-          role_id: emp.employee_role,
-          employee_details: {
-              id: emp.id,  
-              address1: emp.address1,
-              address2: emp.address2,
-              postcode: emp.postcode,
-              city: emp.city,
-              country: emp.country,
-              email: emp.email,
-              phone: emp.phone,
-              handphone: emp.handphone,
-          }
+          whatapps: emp.employee_whatsapp,
+          telegram: emp.employee_telegram,
+          height: emp.employee_height??0,
+          weight: emp.employee_weight??0,
+          gender: emp.employee_gender??'-',
+          role: {
+            role_id: emp.employee_role_id,
+            role_name: emp.employee_role,
+          },
       }));
       
         const dt = {
@@ -192,7 +111,7 @@ const allEmployeeByCompany = async (req, res) => {
 
   } catch (error) {
     console.error('Error retrieving employee registration:', error);
-    res.status(500).send('Employee registration not found');
+    res.status(500).json('Employee registration not found');
   }
 };
 
@@ -471,6 +390,5 @@ module.exports = {
     idEmployee,
     idEmployeeUpdate,
     idEmployeeDetailsUpdate,
-    idEmployeeLeaveHistory,
     employeeAdd
   };

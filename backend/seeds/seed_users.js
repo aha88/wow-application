@@ -8,7 +8,8 @@ exports.seed = async function(knex) {
   await knex('users').del();
   
   const users = [
-    { id: 1, name: 'aizat admin', email: 'aizat@email.com', status: 'active',role_id: 1},
+    { id: 1, name: 'aizat admin', email: 'aizat@email.com', status: 1,role_id: 1},
+    { id: 2, name: 'aizat manger', email: 'aizatmanager@email.com', status: 1,role_id: 2},
   ];
 
   for (const user of users) {

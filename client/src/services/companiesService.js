@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const fetchUserData = async (userId, token) => {
+const fetchCompaniesData = async (token) => {
     try {
-        const response = await axios.post('/api/user',{ id: userId }, {   
+        const response = await axios.get('/api/companies', {   
             headers: {
                 'x-token': token,   
         }});
@@ -12,4 +12,4 @@ const fetchUserData = async (userId, token) => {
     }
 };
 
-export default { fetchUserData };
+export default { fetchCompaniesData };

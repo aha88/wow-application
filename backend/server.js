@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-const port = process.env.APP_PORT || 5000;  
+const port = process.env.APP_PORT || 3000;  
 const bodyParser = require('body-parser');  
 const myRoutes = require('./routes/myRoutes');
 const app = express();
@@ -25,12 +25,15 @@ const swaggerDefinition = {
   info: {
     title: 'API',
     version: '1.0.0',
-    description: 'OpenAPI to make request',
+    description: 'OpenAPI to make',
   },
   servers: [
     {
-      url: `${process.env.DOMAINHOST}:${port}`, 
-    }
+      url: `http://localhost:${port}`, 
+    },
+    {
+      url: `https://localhost:${port}`, 
+    },
   ],
   components: {
     securitySchemes: {

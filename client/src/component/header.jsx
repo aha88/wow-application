@@ -13,11 +13,47 @@ export const Header = ({ data = userData.value }) => {
   const [sData, setData] = useState([]);
 
   useEffect(() => {
-    // Run this only if sessionV.value is actually false to avoid unnecessary re-renders
     if (!sessionV.value) {
       router.push('/');
     }
-  }, []); // Empty array means it runs only once after mount
+  }, [router]);
+
+  useEffect(() => {
+    const initializeUser = async () => {
+      const storedToken = sessionStorage.getItem('tk');
+      const myid = sessionStorage.getItem('id');
+
+      if (storedToken && myid) {
+        tokenV.value = storedToken;
+        userID.value = myid;
+      }
+    };
+
+    initializeUser();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!sessionV.value) {
+        try {
+          const response = await axios.post(
+            '/api/user',
+            { id: userID.value },
+            { headers: { 'x-token': tokenV.value } }
+          );
+          const user = response.data?.[0]?.data?.[0];
+          if (user) {
+            userData.value = user;
+            sessionV.value = true;
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const signOut = (e) => {
     e.preventDefault();
@@ -27,8 +63,40 @@ export const Header = ({ data = userData.value }) => {
     router.push('/');
   };
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
+
+  const handleSubmit = async (e, formData) => {
+    e.preventDefault();
+
+    const data = { ...formData, status_id: 1 };
+    const token = tokenV.value || sessionStorage.getItem('tk');
+
+    try {
+      const insertResponse = await axios.post('/api/insert_customer', data, {
+        headers: { 'x-token': token },
+      });
+
+      if (insertResponse.status === 200) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Insert successful',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+        });
+
+        setIsModalOpen(false);
+
+        const customersResponse = await axios.get('/api/customers', {
+          headers: { 'x-token': token },
+        });
+        setData(customersResponse.data?.data || []);
+        customersData.value = customersResponse.data?.data || [];
+      }
+    } catch (error) {
+      console.error('Error inserting customer or fetching data:', error);
+    }
   };
 
   const fields = [
@@ -40,105 +108,24 @@ export const Header = ({ data = userData.value }) => {
     { id: 'iInput6', type: 'text', name: 'address', placeholder: 'full address here', label: 'Address' },
   ];
 
-  const handleSubmit = async (e, data) => {
-    e.preventDefault();
-  
-    const dt = {
-      ...data,
-      status_id: 1,  // Adding the status_id to the data
-    };
-  
-    const token = tokenV.value ?? sessionStorage.getItem('tk');  // Retrieve the token
-  
-    try {
-      // Insert customer data
-      const res = await axios.post('/api/insert_customer', dt, {
-        headers: {
-          'x-token': token,
-        },
-      });
-  
-      // Show success message if the status is 200
-      if (res.status === 200) {
-        const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        });
-        
-        Toast.fire({
-          icon: 'success',
-          title: 'Insert successful',
-        });
-  
-        setIsModalOpen(false);  
-  
-        const response = await axios.get('/api/customers', {
-          headers: {
-            'x-token': token,
-          },
-        });
-
-        setData(response.data.data);
-  
-        customersData.value = await response.data.data;
-      }
-    } catch (err) {
-      console.error('Error inserting customer or fetching data:', err);
-    }
-  };
-
-  useEffect( async() => {
-    console.log(sessionV.value)
-    if(sessionV.value == null && sessionStorage.getItem('tk')){
-    
-      const id = sessionStorage.getItem('id');
-      const token = sessionStorage.getItem('tk');
-
-      try {
-        const dt = await axios.post('/api/user', {id}, {
-          headers: {
-            'x-token': token,
-          }
-        });
-        const dat = dt.data[0].data[0];
-        userData.value = dat;
-      
-      } catch(err){
-        console.log(err)
-      }
-      
-      sessionV.value = true;
-
-    }
-
-    customersData.value
-  },[])
-  
-
   return (
-    <nav className="navbar sticky-bottom bg-body-tertiary">
+    <nav className="navbar sticky-bottom bg-body-tertiary px-3">
       <div className="container-fluid">
-        <a className="navbar-brand" href="#">AF</a>
-
-        {sessionV.value ? 
-          <>
-            <CCardText className="text-black">
-              <span className="pr-2">{data?.value?.name || 'User'}</span>
-              <Button className="mr-1" color="primary" onClick={toggleModal}>Apply Leave</Button>
-              <Button variant="outline-secondary" onClick={signOut}>Sign-out</Button>
-            </CCardText>
-          </>
-          :
-          <Button className="mr-1" color="primary" onClick={toggleModal}>New Account</Button>
-        }
-
+        <a className="navbar-brand" href="#">
+          WOW
+        </a>
+        {sessionV.value ? (
+          <CCardText className="text-black">
+            <span className="pr-2">{data?.value?.name || 'User'}</span>
+            <Button variant="outline-secondary" onClick={signOut}>
+              Sign-out
+            </Button>
+          </CCardText>
+        ) : (
+          <Button className="mr-1" color="primary" onClick={toggleModal}>
+            New Account
+          </Button>
+        )}
         {isModalOpen && (
           <RegisterCustomer
             onShow={isModalOpen}

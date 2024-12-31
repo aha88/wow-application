@@ -47,9 +47,6 @@ const postLogin = async (req, res) => {
 
 // Get all users
 const getAllUsers = async (req, res) => {
-  if ([2, 3, 4].includes(req.userAccess.role_id)) {
-    return res.status(405).json('You don\'t have the authorization');
-  }
 
   try {
     const users = await db('users').select('*');

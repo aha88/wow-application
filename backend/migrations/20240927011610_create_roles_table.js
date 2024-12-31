@@ -3,11 +3,15 @@
  * @returns { Promise<void> }
  */
 exports.up = function(knex) {
-    return knex.schema.createTable('status_code', function(table) {
+    return knex.schema.createTable('roles', function(table) {
         table.increments('id').primary();
         table.string('name');
+        table.integer('company_id');
+
+        table.foreign('company_id').references('id').inTable('companies').onDelete('CASCADE');
+
         table.timestamps(true, true);
-      });
+    })
 };
 
 /**
@@ -15,5 +19,5 @@ exports.up = function(knex) {
  * @returns { Promise<void> }
  */
 exports.down = function(knex) {
-    return knex.schema.dropTable('status_code');
+    return knex.schema.dropTable('roles');
 };

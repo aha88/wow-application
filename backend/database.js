@@ -1,7 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
-// TODO checking
+
 // Connect to SQLite database (creates a new file if it doesn't exist)
-const db = new sqlite3.Database('./wow.sqlite', (err) => {
+const db = new sqlite3.Database('./mydb.sqlite', (err) => {
   if (err) {
     console.error('Error opening database', err.message);
   } else {
