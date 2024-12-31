@@ -13,8 +13,8 @@ const MyDataTable = ({ data, onDelete, onView }) => {
       {
         Header: 'Status',
         Cell: ({ row }) => {
-          const { status } = row.original; // Access status object
-          if (!status) return null; // Handle missing status
+          const { status } = row.original;  
+          if (!status) return null;  
 
           // Map status ID to a badge
           const statusMapping = {

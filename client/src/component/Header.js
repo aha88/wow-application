@@ -1,75 +1,49 @@
 import { Button } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { sessionV, tokenV, userID, userData, customersData } from '../store/authuser';
+import { sessionV, tokenV, userID, userData } from '../store/authuser';
 import axios from 'axios';
 import { CCardText } from '@coreui/react';
 import RegisterCustomer from './register';
 import Swal from 'sweetalert2';
+import { useAtom } from 'jotai';
 
-export const Header = ({ data = userData.value }) => {
+const Header = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [sData, setData] = useState([]);
 
+  const [personDT, setPersonDT] = useAtom(userData);
+  const [personID] = useAtom(userID);
+  const [tokenValue, setTokenV] = useAtom(tokenV);
+  const [sessionValue, setSessionV] = useAtom(sessionV);
+
+  // Redirect to home if session or token is not present
   useEffect(() => {
-    if (!sessionV.value) {
+    if (!sessionValue || !tokenValue) {
       router.push('/');
     }
-  }, [router]);
+  }, [sessionValue, tokenValue, router]);
 
-  useEffect(() => {
-    const initializeUser = async () => {
-      const storedToken = sessionStorage.getItem('tk');
-      const myid = sessionStorage.getItem('id');
-
-      if (storedToken && myid) {
-        tokenV.value = storedToken;
-        userID.value = myid;
-      }
-    };
-
-    initializeUser();
-  }, []);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (!sessionV.value) {
-        try {
-          const response = await axios.post(
-            '/api/user',
-            { id: userID.value },
-            { headers: { 'x-token': tokenV.value } }
-          );
-          const user = response.data?.[0]?.data?.[0];
-          if (user) {
-            userData.value = user;
-            sessionV.value = true;
-          }
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        }
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  const signOut = (e) => {
-    e.preventDefault();
+  // Handle sign out
+  const signOut = () => {
     sessionStorage.clear();
-    sessionV.value = null;
-    tokenV.value = null;
-    router.push('/');
+    setSessionV(null);
+    setTokenV(null);
+
+    setTimeout(() => {
+      router.push('/');
+    }, 100);
   };
 
-  const toggleModal = () => setIsModalOpen(!isModalOpen);
+  // Toggle modal visibility
+  const toggleModal = () => setIsModalOpen((prev) => !prev);
 
+  // Handle form submission
   const handleSubmit = async (e, formData) => {
     e.preventDefault();
 
     const data = { ...formData, status_id: 1 };
-    const token = tokenV.value || sessionStorage.getItem('tk');
+    const token = tokenValue || sessionStorage.getItem('tk');
 
     try {
       const insertResponse = await axios.post('/api/insert_customer', data, {
@@ -91,8 +65,7 @@ export const Header = ({ data = userData.value }) => {
         const customersResponse = await axios.get('/api/customers', {
           headers: { 'x-token': token },
         });
-        setData(customersResponse.data?.data || []);
-        customersData.value = customersResponse.data?.data || [];
+        setPersonDT(customersResponse.data?.data || []);
       }
     } catch (error) {
       console.error('Error inserting customer or fetching data:', error);
@@ -114,10 +87,10 @@ export const Header = ({ data = userData.value }) => {
         <a className="navbar-brand" href="#">
           WOW
         </a>
-        {sessionV.value ? (
+        {sessionValue ? (
           <CCardText className="text-black">
-            <span className="pr-2">{data?.value?.name || 'User'}</span>
-            <Button variant="outline-secondary" onClick={signOut}>
+            <span className="pr-2">{personDT.name || 'User'}</span>
+            <Button variant="outline-secondary" onClick={()=> signOut}>
               Sign-out
             </Button>
           </CCardText>
@@ -138,3 +111,5 @@ export const Header = ({ data = userData.value }) => {
     </nav>
   );
 };
+
+export default Header;

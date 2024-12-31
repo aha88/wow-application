@@ -1,3 +1,4 @@
+
 export default async function handler(req, res) {
     try {
         const id = req.body.id
@@ -10,7 +11,6 @@ export default async function handler(req, res) {
              }
         });
         const data = await response.json();
-        console.log(data)
         return res.json(data);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });

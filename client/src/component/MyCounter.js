@@ -4,9 +4,9 @@ import CIcon from '@coreui/icons-react';
 import { cilArrowThickRight } from '@coreui/icons';
 
 
-const MyCounter = ({title,number, btn, classColorName}) => {
+const MyCounter = ({title,number, btn, classColorName, mdSize}) => {
   return (
-    <CCol md={3} >
+    <CCol md={mdSize} >
       <div className={`boxcontainer bg-white-border p-2 ${classColorName}`}>
         <div className='top'>
           <>{title}</>

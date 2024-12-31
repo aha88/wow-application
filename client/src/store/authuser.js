@@ -1,10 +1,12 @@
-import {signal} from '@preact/signals-react';
+import { atomWithStorage } from 'jotai/utils'
 
 
-export const sessionV = signal(null);
-export const tokenV = signal(null);
-export const userID = signal(null);
-export const userData = signal([]);
+export const userData = atomWithStorage('personDT', []);
+export const userID = atomWithStorage('personID', []);
+export const tokenV = atomWithStorage('tokenV', []);
+export const sessionV = atomWithStorage('sessionV', false);
+export const employeeV = atomWithStorage('employeesValue', []);
 
-export const customerData = signal([]);
-export const customersData = signal(null);
+
+export const compUser = atomWithStorage('compUserValue', []);
+export const dashboardCountV = atomWithStorage('dashboardCountValue', []);

@@ -3,3 +3,9 @@ package-lock.json
 backend\wow.sqlite
 
 .env
+backend/wowapplication.sqlite
+backend/seeds/create_seed_checkup.js
+backend/seeds/create_seed_condition_type.js
+backend/seeds/create_seed_type_checkup.js
+backend/seeds/seed_companies.js
+backend/seeds/seed_employee.js

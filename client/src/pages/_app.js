@@ -1,18 +1,24 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '@/styles/globals.scss'
-import '@/styles/mystyle.scss'
-import '@/styles/index.scss'
+import '@/styles/globals.scss';
+import '@/styles/mystyle.scss';
+import '@/styles/index.scss';
+
 import { Footer } from '@/component/footer';
 import { Header } from '@/component/header';
-import 'bootstrap/dist/css/bootstrap.min.css'
-import {sessionV, userData } from '../store/authuser';
 
-export default function App({ Component, pageProps: { ...pageProps }, }) {
+import { userData } from '../store/authuser';
+import { useAtom } from 'jotai';
 
-  return <div className='body'>
-      <Header data={userData} />
-      <Component {...pageProps} />
+export default function App({ Component, pageProps }) {
+  const [userDetails, setUserDetails] = useAtom(userData);
+
+  return (
+    <>
+      <Header data={userDetails} />
+      <main>
+        <Component {...pageProps} />
+      </main>
       <Footer />
-      </div>
-
+    </>
+  );
 }

@@ -1,106 +1,118 @@
 "use client";
 
-// eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react'
-import {  CButton, CCardTitle, CCol, CForm, CFormInput, CInputGroup } from '@coreui/react';
+import React, { useState } from 'react';
+import { CButton, CCardTitle, CCol, CForm, CFormInput, CInputGroup } from '@coreui/react';
 import Joi from 'joi';
 import { useRouter } from 'next/router';
 import axios from 'axios';
-import {sessionV, tokenV,userData,userID } from '../store/authuser';
-
-
+import { tokenV, userData, userID, sessionV } from "../store/authuser";
+import { useAtom } from 'jotai';
 
 export default function Login() {
-  const [formData, setFormData] = useState({email: 'aizat@email.com',password: 'aizat'});
-  const [error, setError] = useState('');
-  
   const router = useRouter();
+  const [formData, setFormData] = useState({ email: 'aizat@email.com', password: 'aizat' });
+  const [validationError, setValidationError] = useState('');
+  const [apiError, setApiError] = useState('');
+  const [personDT, setPersonDT] = useAtom(userData);
+  const [userIdentifier, setUserIdentifier] = useAtom(userID);
+  const [token, setToken] = useAtom(tokenV);
+  const [sessionActive, setSessionActive] = useAtom(sessionV);
+
+ 
 
   const schema = Joi.object({
-    email: Joi.string().required().label('email'),
-    password: Joi.string().required().label('password'),
+    email: Joi.string().email({ tlds: { allow: false } }).required().label('Email'),
+    password: Joi.string().min(4).required().label('Password'),
   });
-  
-  const handling = async (e) => {
-      e.preventDefault();
 
-      if (error) {
-        setError(error.details[0].message);
-      } else {
-        setError('');  
-      
-        try {
-          const response = await axios.post(`api/login`, formData);
-          const data = response.data;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-          sessionV.value = true;
-          tokenV.value =  data.token;
-          userID.value = data.userID;
-          userData.value = data.user;
+    const { error } = schema.validate(formData);
+    if (error) {
+      setValidationError(error.details[0].message);
+      return;
+    }
 
-          sessionStorage.setItem('tk', data.token);  
-          sessionStorage.setItem('session', true);  
-          sessionStorage.setItem('id', data.userID);  
+    try {
+      setValidationError('');
+      setApiError('');
 
-          const { errors } = schema.validate(formData);
+      const response = await axios.post('/api/login', formData);
+      const { token, userID, user } = response.data;
 
-          if(tokenV.value !== null){
-            router.push('./dashboard');
-          }
+      // Update state
+      setSessionActive(true);
+      setToken(token);
+      setUserIdentifier(userID);
+      setPersonDT(user);
 
-        } catch (err) {
-          console.error('Error during login request:', err);
-          setError(errors); 
-        }
-      }
-  }
-
-    const handleInputChange = (e) => {
-      const { name, value } = e.target;
-      setFormData((prevData) => ({
-          ...prevData,
-          [name]: value,
-      }));
-    };
+      // Store in sessionStorage
+      sessionStorage.setItem('tk', token);
+      sessionStorage.setItem('session', true);
+      sessionStorage.setItem('id', userID);
 
 
-    
+      setTimeout(() => {
+        router.push('./dashboard/dashboard');
+      }, 100);
+
+    } catch (err) {
+      console.error('Login request error:', err);
+      setApiError(err.response?.data?.message || 'An unexpected error occurred.');
+    }
+  };
+
+  // Input change handler
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   return (
     <div className='body'>
       <div className='box-container'>
+        <CCardTitle className='text-black'>Login</CCardTitle>
 
-        <CCardTitle className='text-black'>
-          Login
-        </CCardTitle>
+        {/* Display validation or API errors */}
+        {validationError && <p className="text-danger">{validationError}</p>}
+        {apiError && <p className="text-danger">{apiError}</p>}
 
-        
-        
-        <p className="text-danger font-black">
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-        </p>
-        
-        <CForm onSubmit={handling}>
+        <CForm onSubmit={handleSubmit}>
           <CCol>
-          <CInputGroup>
-            <CFormInput type='email' name='email' value={formData.email} placeholder='email@email.com'  className='inputtext'  onChange={handleInputChange} />
-          </CInputGroup>
+            <CInputGroup>
+              <CFormInput
+                type='email'
+                name='email'
+                value={formData.email}
+                placeholder='email@email.com'
+                className='inputtext'
+                onChange={handleInputChange}
+              />
+            </CInputGroup>
           </CCol>
           <CCol>
-          
-
-          <CInputGroup>
-            <CFormInput type='password' name='password' placeholder='****' value={formData.password} className='inputtext' id='inputPassword'   onChange={handleInputChange}/>
-          </CInputGroup>
+            <CInputGroup>
+              <CFormInput
+                type='password'
+                name='password'
+                placeholder='****'
+                value={formData.password}
+                className='inputtext'
+                onChange={handleInputChange}
+              />
+            </CInputGroup>
           </CCol>
           <CCol>
             <CButton type='submit' color='primary' className='mb-3'>
-                      Submit
+              Submit
             </CButton>
-
           </CCol>
         </CForm>
-
       </div>
     </div>
-  )
+  );
 }
