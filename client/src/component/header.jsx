@@ -8,7 +8,7 @@ import RegisterCustomer from './register';
 import Swal from 'sweetalert2';
 import { useAtom } from 'jotai';
 
-const Header = () => {
+export const Header = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -90,7 +90,7 @@ const Header = () => {
         {sessionValue ? (
           <CCardText className="text-black">
             <span className="pr-2">{personDT.name || 'User'}</span>
-            <Button variant="outline-secondary" onClick={()=> signOut}>
+            <Button variant="outline-secondary" onClick={signOut}>
               Sign-out
             </Button>
           </CCardText>
@@ -112,4 +112,3 @@ const Header = () => {
   );
 };
 
-export default Header;

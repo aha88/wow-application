@@ -7,20 +7,7 @@ import Dashboard from './dashboard/dashboard';
 
 
 export default function Home() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
   
-    useEffect(() => {
-
-      sessionV.value = sessionStorage.getItem('session') == "true" ? true : false;
-      userID.value = sessionStorage.getItem('id') == "true" ? true : false;
-      
-
-      if (sessionV.value == true) {
-        setIsLoggedIn(true);  
-      }else{
-        setIsLoggedIn(false);  
-      }
-    }, [isLoggedIn]);  
   
-    return isLoggedIn ? <Dashboard/> : <Login />;
+    return   <Login />;
 }

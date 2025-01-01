@@ -18,83 +18,89 @@ const Dashboard = () => {
     const [error, setError] = useState('');
     const router = useRouter();
 
-    useEffect(() => {
-        const fetchCompanyData = async () => {
-            if (employeesValue?.length === 0) {
-                setLoading(true);
-                try {
-                    const companiesData = await companiesService.fetchCompaniesData(tokenValue);
-                    setEmployeeV(companiesData.data);
-                } catch (err) {
-                    setError(err.message);
-                } finally {
-                    setLoading(false);
-                }
-            } else {
-                setLoading(false);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchCompanyData = async () => {
+    //         if (employeesValue?.length === 0) {
+    //             setLoading(true);
+    //             try {
+    //                 const companiesData = await companiesService.fetchCompaniesData(tokenValue);
+    //                 setEmployeeV(companiesData.data);
+    //             } catch (err) {
+    //                 setError(err.message);
+    //             } finally {
+    //                 setLoading(false);
+    //             }
+    //         } else {
+    //             setLoading(false);
+    //         }
+    //     };
 
-        fetchCompanyData();
-    }, [employeesValue]);
+    //     fetchCompanyData();
+    // }, [employeesValue]);
 
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            if (dashboardCountValue?.length === 0) {
-                setLoading(true);
-                try {
-                    const dashboardData = await dashboardsService.fetchDashboardData(tokenValue);
-                    setDashboardCountV(dashboardData.data);
-                } catch (err) {
-                    setError(err.message);
-                } finally {
-                    setLoading(false);
-                }
-            } else {
-                setLoading(false);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchDashboardData = async () => {
+    //         if (dashboardCountValue?.length === 0) {
+    //             setLoading(true);
+    //             try {
+    //                 const dashboardData = await dashboardsService.fetchDashboardData(tokenValue);
+    //                 setDashboardCountV(dashboardData.data);
+    //             } catch (err) {
+    //                 setError(err.message);
+    //             } finally {
+    //                 setLoading(false);
+    //             }
+    //         } else {
+    //             setLoading(false);
+    //         }
+    //     };
 
-        fetchDashboardData();
-    }, [dashboardCountValue]);
+    //     fetchDashboardData();
+    // }, [dashboardCountValue]);
 
-    const handleDelete = () => {
-        // Implement delete functionality
-    };
+    // const handleDelete = () => {
+    //     // Implement delete functionality
+    // };
 
-    const handleView = (e) => {
-        router.push(`../companies/${e.id}`);
-    };
+    // const handleView = (e) => {
+    //     router.push(`../companies/${e.id}`);
+    // };
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p className="text-danger">{error}</p>;
 
     return (<>
         <div className='body'>
-            <CContainer className='mt-3'>
+            {/* <CContainer className='mt-3'>
                 <CRow className='mt-3'>
                     <CCol md={12}>
                         <CCardTitle>Dashboard</CCardTitle>
                     </CCol>
                 </CRow>
 
+
+                <hr className='border'/>
                 <CRow className='mt-4'>
-                    <CCol md={3}>
-                        <MyCounter
-                            title="TOTAL OF COMPANY"
-                            number={employeesValue?.length || 0}
-                            btn={false}
-                            mdSize={12}
-                            classColorName="bg-light text-dark text-center font-weight-bold"
-                        />
-                        <MyCounter
-                            title="TOTAL OF EMPLOYEE SIGNUP"
-                            number={dashboardCountValue[1]?.all_employee_count || 0}
-                            btn={false}
-                            mdSize={12}
-                            classColorName="bg-dark text-light text-center font-weight-bold"
-                        />
-                    </CCol>
+                    {employeesValue || dashboardCountValue ?
+                        <CCol md={3}>
+                            <MyCounter
+                                title="TOTAL OF COMPANY"
+                                number={employeesValue?.length || 0}
+                                btn={false}
+                                mdSize={12}
+                                classColorName="bg-light text-dark text-center font-weight-bold"
+                            />
+                            <MyCounter
+                                title="TOTAL OF EMPLOYEE SIGNUP"
+                                number={dashboardCountValue[1]?.all_employee_count || 0}
+                                btn={false}
+                                mdSize={12}
+                                classColorName="bg-dark text-light text-center font-weight-bold"
+                            />
+                        </CCol>
+                        :
+                    ''
+                    }
                     <CCol md={9}>
                         {employeesValue && (
                             <MyDataTable
@@ -105,7 +111,7 @@ const Dashboard = () => {
                         )}
                     </CCol>
                 </CRow>
-            </CContainer>
+            </CContainer> */}
         </div>
         </>);
 };

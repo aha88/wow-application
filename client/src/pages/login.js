@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import { tokenV, userData, userID, sessionV } from "../store/authuser";
 import { useAtom } from 'jotai';
+import Cookies from 'js-cookie';
 
 export default function Login() {
   const router = useRouter();
@@ -17,7 +18,6 @@ export default function Login() {
   const [userIdentifier, setUserIdentifier] = useAtom(userID);
   const [token, setToken] = useAtom(tokenV);
   const [sessionActive, setSessionActive] = useAtom(sessionV);
-
  
 
   const schema = Joi.object({
@@ -52,18 +52,18 @@ export default function Login() {
       sessionStorage.setItem('session', true);
       sessionStorage.setItem('id', userID);
 
+      Cookies.set('token', token, { expires: 1, secure: true, sameSite: 'Strict' });
 
-      setTimeout(() => {
-        router.push('./dashboard/dashboard');
+      setTimeout(async () => {
+        await router.push('./dashboard/Dashboard');
       }, 100);
-
+    
     } catch (err) {
       console.error('Login request error:', err);
       setApiError(err.response?.data?.message || 'An unexpected error occurred.');
     }
   };
 
-  // Input change handler
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
