@@ -18,60 +18,60 @@ const Dashboard = () => {
     const [error, setError] = useState('');
     const router = useRouter();
 
-    // useEffect(() => {
-    //     const fetchCompanyData = async () => {
-    //         if (employeesValue?.length === 0) {
-    //             setLoading(true);
-    //             try {
-    //                 const companiesData = await companiesService.fetchCompaniesData(tokenValue);
-    //                 setEmployeeV(companiesData.data);
-    //             } catch (err) {
-    //                 setError(err.message);
-    //             } finally {
-    //                 setLoading(false);
-    //             }
-    //         } else {
-    //             setLoading(false);
-    //         }
-    //     };
+    useEffect(() => {
+        const fetchCompanyData = async () => {
+            if (employeesValue?.length === 0) {
+                setLoading(true);
+                try {
+                    const companiesData = await companiesService.fetchCompaniesData(tokenValue);
+                    setEmployeeV(companiesData.data);
+                } catch (err) {
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                }
+            } else {
+                setLoading(false);
+            }
+        };
 
-    //     fetchCompanyData();
-    // }, [employeesValue]);
+        fetchCompanyData();
+    }, [employeesValue]);
 
-    // useEffect(() => {
-    //     const fetchDashboardData = async () => {
-    //         if (dashboardCountValue?.length === 0) {
-    //             setLoading(true);
-    //             try {
-    //                 const dashboardData = await dashboardsService.fetchDashboardData(tokenValue);
-    //                 setDashboardCountV(dashboardData.data);
-    //             } catch (err) {
-    //                 setError(err.message);
-    //             } finally {
-    //                 setLoading(false);
-    //             }
-    //         } else {
-    //             setLoading(false);
-    //         }
-    //     };
+    useEffect(() => {
+        const fetchDashboardData = async () => {
+            if (dashboardCountValue?.length === 0) {
+                setLoading(true);
+                try {
+                    const dashboardData = await dashboardsService.fetchDashboardData(tokenValue);
+                    setDashboardCountV(dashboardData.data);
+                } catch (err) {
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                }
+            } else {
+                setLoading(false);
+            }
+        };
 
-    //     fetchDashboardData();
-    // }, [dashboardCountValue]);
+        fetchDashboardData();
+    }, [dashboardCountValue]);
 
-    // const handleDelete = () => {
-    //     // Implement delete functionality
-    // };
+    const handleDelete = () => {
+        // Implement delete functionality
+    };
 
-    // const handleView = (e) => {
-    //     router.push(`../companies/${e.id}`);
-    // };
+    const handleView = (e) => {
+        router.push(`../companies/${e.id}`);
+    };
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p className="text-danger">{error}</p>;
 
     return (<>
         <div className='body'>
-            {/* <CContainer className='mt-3'>
+            <CContainer className='mt-3'>
                 <CRow className='mt-3'>
                     <CCol md={12}>
                         <CCardTitle>Dashboard</CCardTitle>
@@ -111,7 +111,7 @@ const Dashboard = () => {
                         )}
                     </CCol>
                 </CRow>
-            </CContainer> */}
+            </CContainer>
         </div>
         </>);
 };

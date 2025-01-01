@@ -72,6 +72,13 @@ export default function Login() {
     }));
   };
 
+  if(sessionActive){
+
+   return setTimeout(async () => {
+      await router.push('./dashboard/Dashboard');
+    }, 100);
+  }
+
   return (
     <div className='body'>
       <div className='box-container'>
