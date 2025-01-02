@@ -2,54 +2,24 @@ import React, {useState, useEffect} from 'react';
 import { Button, Card, CardBody, CardText, Col, Container, Row } from 'react-bootstrap'
 import { useRouter } from 'next/router';
 import axios from 'axios';
-import { CButton, CCard, CCardBody, CCardHeader, CCardTitle, CCol, CContainer, CForm, CFormFloating, CFormInput, CFormLabel, CFormSelect, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CRow } from '@coreui/react';
-import { customerData, tokenV } from '@/store/authuser';
+import { CButton, CCard, CCardBody, CCardHeader, CCardText, CCardTitle, CCol, CContainer, CForm, CFormFloating, CFormInput, CFormLabel, CFormSelect, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CRow } from '@coreui/react';
 import Swal from 'sweetalert2';
-
+import { userData, tokenV } from "../../store/authuser";
+import { useAtom } from 'jotai';
 
 const Customer = ({ userOne }) => {
-    const [data, setData] = useState([]);
     const [model, setModel] = useState(false);
     const [formData, setFormData] = useState([]);
     const [errorM, setErrorM] = useState('');
 
-    const router = useRouter();
-    const activeCustomer = customerData.value;
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const token = tokenV.value??sessionStorage.getItem('tk');  
-            try {
-                const response = await axios.post(`/api/customer`, { id: userOne }, {
-                    headers: {
-                        'x-token': token,
-                    },
-                });
+    const [personDT] = useAtom(userData);
+    const [tokenValue] = useAtom(tokenV);
     
-                const customer = response.data[0].data;
-                setData(customer);   
-                customerData.value = customer;  
-    
-                console.log(customer);
-    
-                setFormData({
-                    status_id: customer[0].status_id,
-                    name: customer[0].name,
-                    birth_of_date: customer[0].birth_of_date,
-                    national_id: customer[0].national_id,
-                    phone: customer[0].phone,
-                    address: customer[0].address,
-                    email: customer[0].email,
-                    id: userOne,
-                });
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-        fetchData();   
-    }, []);   
-    
-    
+
+    const router = useRouter();
+ 
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -63,9 +33,9 @@ const Customer = ({ userOne }) => {
             setErrorM('');  
           
             console.log(formData)
-            const token = tokenV.value;
+            const token = tokenValue;
 
-            await axios.post('/api/updatecustomer',formData, {
+            await axios.post('/api/updateuser',formData, {
                 headers: {
                     'x-token': token,
                 }
@@ -102,41 +72,44 @@ const Customer = ({ userOne }) => {
 
 
     
-    if(data.length == 0) {  
-        return "..."
+    if(personDT == null) {  
+        return (<CContainer className='mt-3'>
+            <CRow className='mt-5 mb-5'>
+                Loading...
+            </CRow>
+            </CContainer>)
     }else{
         return (
             <div className='body'>
                 <CContainer className='mt-3'>
                     <CRow className='mt-3'>
-                        <CCardTitle>Customer Details </CCardTitle>
+                        <CCardTitle>User Details </CCardTitle>
                     </CRow>
 
                     <CRow className='mt-3'>
-                        <CCard>
+                        <CCard className='p-0 cardbox'>
                             <CCardHeader variant='clear'>
                                 <CButton className='float-right' color='primary'onClick={() => setModel(!model)} variant='outline'>Edit</CButton>
                             </CCardHeader>
                             <CCardBody>
-                            {activeCustomer.map((dt,i) => {
-                                return(<div key={i}>
-                                <CCardTitle>{dt.name}</CCardTitle>
+                           
+                                <CCardTitle>User</CCardTitle>
+                                
+                                <CRow className='mt-3'>
+                                    <CCol> <CardText className='detail_label'>Name</CardText> {personDT.name}</CCol>
 
-                                <CRow>
-                                    <CCol> <CardText className='detail_label'>Birth of Date</CardText> {dt.birth_of_date}</CCol>
-                                    <CCol> <CardText className='detail_label'>National ID</CardText> {dt.national_id}</CCol>
-                                    <CCol> <CardText className='detail_label'>Phone</CardText> {dt.phone}</CCol>
-                                    <CCol> <CardText className='detail_label'>Address</CardText> {dt.address}</CCol>
                                 </CRow>
+
                                 <hr/>
 
                                 <CCardTitle>Access</CCardTitle>
-                                <CRow>
-                                    <CCol> <CardText className='detail_label'>Email</CardText> {dt.email}</CCol>
-                                    <CCol> <CardText className='detail_label'>Status</CardText> {dt.status_name}</CCol>
+                                
+                                <CRow className='mt-3'>
+                                    <CCol className='mt-2'> <CardText className='detail_label'>Email</CardText> {personDT.email}</CCol>
+                                     <CCol className='mt-2' sm={12} md={4}> <CardText className='detail_label'>Status</CardText> {personDT.status?.status_name}</CCol> 
+                                     <CCol className='mt-2' sm={12} md={4}> <CardText className='detail_label'>Role</CardText> {personDT.role?.role_name}</CCol>
                                 </CRow>
-                                </div>)
-                            })}
+                                
                             </CCardBody>
                         </CCard>
                     </CRow>
@@ -161,47 +134,45 @@ const Customer = ({ userOne }) => {
                                 <CRow>
                                     <CCol md={6} className='mt-1'>
                                         <CFormFloating>
-                                            <CFormInput type="email" id="floatingInput" onChange={handleInputChange} value={formData.email} placeholder="name@example.com" name='email' />
-                                            <CFormLabel htmlFor="floatingInput">Email address</CFormLabel>
-                                        </CFormFloating>
-                                    </CCol>
-                                    <CCol md={6} className='mt-1'>
-                                        <CFormFloating>
-                                            <CFormInput type="text" id="floatingInput" onChange={handleInputChange} value={formData.name} placeholder="name@example.com" name='name' />
+                                            <CFormInput type="text" id="floatingInput" onChange={handleInputChange} value={formData.name??personDT.name} placeholder="Muhammad Waiz" name='name' />
                                             <CFormLabel htmlFor="floatingInput">Name</CFormLabel>
                                         </CFormFloating>
                                     </CCol>
                                     <CCol md={6} className='mt-1'>
                                         <CFormFloating>
-                                            <CFormInput type="date" id="floatingInput" onChange={handleInputChange} value={formData.birth_of_date} placeholder="name@example.com" name='birth_of_date' />
-                                            <CFormLabel htmlFor="floatingInput">Birthdate</CFormLabel>
+                                            <CFormInput type="email" id="floatingInput" onChange={handleInputChange} value={formData.email??personDT.email} placeholder="waiz@email.com" name='email' />
+                                            <CFormLabel htmlFor="floatingInput">Email</CFormLabel>
                                         </CFormFloating>
                                     </CCol>
+                                   
+                               
+                                    
                                     <CCol md={6} className='mt-1'>
                                         <CFormFloating>
-                                            <CFormInput type="text" id="floatingInput" onChange={handleInputChange} value={formData.national_id} placeholder="name@example.com" name='national_id' />
-                                            <CFormLabel htmlFor="floatingInput">National ID</CFormLabel>
-                                        </CFormFloating>
-                                    </CCol>
-                                    <CCol md={6} className='mt-1'>
-                                        <CFormFloating>
-                                            <CFormInput type="text" id="floatingInput" onChange={handleInputChange} value={formData.phone} placeholder="" name='phone' />
-                                            <CFormLabel htmlFor="floatingInput">Phone</CFormLabel>
-                                        </CFormFloating>
-                                    </CCol>
-                                    <CCol md={6} className='mt-1'>
-                                        <CFormFloating>
-                                            <CFormSelect onChange={handleInputChange} value={formData.status_id} name='status_id' 
+                                            <CFormSelect onChange={handleInputChange} value={formData.role_id??personDT.role_id} name='role_id' 
                                             options={[
                                                 'Select Option',
-                                                { label: 'Pending', value: '1' },
-                                                { label: 'Approved', value: '2' },
+                                                { label: 'Approved', value: '1' },
+                                                { label: 'Pending', value: '2' },
                                                 { label: 'Rejected', value: '3' }
                                               ]} />
                                             <CFormLabel htmlFor="floatingInput">Status</CFormLabel>
                                         </CFormFloating>
                                     </CCol>
-                                            <CFormInput type="hidden" onChange={handleInputChange} value={userOne} name='id' />
+                                    <CCol md={6} className='mt-1'>
+                                        <CFormFloating>
+                                            <CFormSelect onChange={handleInputChange} value={formData.status_id??personDT.status} name='status_id' 
+                                            options={[
+                                                'Select Option',
+                                                { label: 'Approved', value: '1' },
+                                                { label: 'Pending', value: '2' },
+                                                { label: 'Rejected', value: '3' }
+                                              ]} />
+                                            <CFormLabel htmlFor="floatingInput">Status</CFormLabel>
+                                        </CFormFloating>
+                                    </CCol>
+                                    
+                                    <CFormInput type="hidden" onChange={handleInputChange} value={userOne} name='id' />
                                 </CRow>
                                 
                             </CModalBody>

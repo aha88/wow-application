@@ -3,32 +3,27 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { sessionV, tokenV, userID, userData } from '../store/authuser';
 import axios from 'axios';
-import { CCardText } from '@coreui/react';
+import { CButton, CCardText, CCollapse, CContainer, CForm, CNav, CNavbar, CNavbarBrand, CNavItem, CNavLink, COffcanvas, COffcanvasBody, COffcanvasHeader, CSidebarNav } from '@coreui/react';
 import RegisterCustomer from './register';
 import Swal from 'sweetalert2';
 import { useAtom } from 'jotai';
+import { cilSpeedometer, cilLayers, cilVector,cilMenu} from '@coreui/icons';
+import CIcon from '@coreui/icons-react';
 
-export const Header = () => {
+export const Header = (data) => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [visible, setVisible] = useState(false)
   const [personDT, setPersonDT] = useAtom(userData);
-  const [personID] = useAtom(userID);
   const [tokenValue, setTokenV] = useAtom(tokenV);
   const [sessionValue, setSessionV] = useAtom(sessionV);
 
-  // Redirect to home if session or token is not present
-  useEffect(() => {
-    if (!sessionValue || !tokenValue) {
-      router.push('/');
-    }
-  }, [sessionValue, tokenValue, router]);
-
+ 
   // Handle sign out
   const signOut = () => {
     sessionStorage.clear();
-    setSessionV(null);
-    setTokenV(null);
+    setSessionV(false);
+    setTokenV([]);
 
     setTimeout(() => {
       router.push('/');
@@ -81,34 +76,68 @@ export const Header = () => {
     { id: 'iInput6', type: 'text', name: 'address', placeholder: 'full address here', label: 'Address' },
   ];
 
-  return (
-    <nav className="navbar sticky-bottom bg-body-tertiary px-3">
-      <div className="container-fluid">
-        <a className="navbar-brand" href="#">
-          WOW
-        </a>
-        {sessionValue ? (
-          <CCardText className="text-black">
-            <span className="pr-2">{personDT.name || 'User'}</span>
-            <Button variant="outline-secondary" onClick={signOut}>
-              Sign-out
-            </Button>
-          </CCardText>
-        ) : (
-          <Button className="mr-1" color="primary" onClick={toggleModal}>
-            New Account
-          </Button>
-        )}
-        {isModalOpen && (
-          <RegisterCustomer
-            onShow={isModalOpen}
-            closeShow={toggleModal}
-            initialFields={fields}
-            handingSubmitCustomer={handleSubmit}
-          />
-        )}
-      </div>
-    </nav>
+  return (<>
+      <CNavbar expand="md" className="sticky-bottom bg-body-tertiary px-3">
+        <CContainer fluid>
+             {sessionValue ? 
+                <CCollapse className="navbar-collapse" visible={true}>
+                  <CNavLink href="#" active>
+                    <CButton onClick={() => setVisible(true)}>  <CIcon customClassName="nav-icon" size='sm' height={25} width={25} icon={cilMenu} /> </CButton>
+                  </CNavLink>
+                  <CNavLink href="/">
+                    <CButton> WOW</CButton>
+                  </CNavLink>
+                </CCollapse>
+              :
+              <CNavLink href="/">
+                <CButton> WOW</CButton>
+              </CNavLink>
+              
+            }
+          
+          <CForm className="d-flex">
+            {sessionValue ? (
+              <CCardText className="text-black">
+                <span className="pr-2">{personDT.name || 'User'}</span>
+                <Button variant="outline-danger" onClick={signOut}>
+                  Sign Out
+                </Button>
+              </CCardText>
+            ) : (
+              <Button className="mr-1" color="primary" onClick={toggleModal}>
+                New Account
+              </Button>
+            )}
+            {isModalOpen && (
+              <RegisterCustomer
+                onShow={isModalOpen}
+                closeShow={toggleModal}
+                initialFields={fields}
+                handingSubmitCustomer={handleSubmit}
+              />
+            )}
+          </CForm>
+        </CContainer>
+      </CNavbar>
+      <COffcanvas placement="end" visible={visible} onHide={() => setVisible(false)}>
+        <COffcanvasHeader>Navigation</COffcanvasHeader>
+        <COffcanvasBody>
+            <CNav>
+              <CSidebarNav>
+                  <CNavItem href="/dashboard/Dashboard">
+                    <CIcon customClassName="nav-icon" size='sm' height={50} width={50} icon={cilSpeedometer} /> Dashboard
+                  </CNavItem>
+                  <CNavItem href="/companies">
+                    <CIcon customClassName="nav-icon" size='sm' height={50} width={50} icon={cilVector} /> Companies
+                  </CNavItem>
+                  <CNavItem href={`/profile/${data.id}`}>
+                    <CIcon customClassName="nav-icon" size='sm' height={50} width={50} icon={cilLayers} /> Setting
+                  </CNavItem>
+                </CSidebarNav>
+            </CNav>
+        </COffcanvasBody>
+      </COffcanvas>
+    </>
   );
 };
 

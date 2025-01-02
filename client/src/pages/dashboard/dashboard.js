@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { CCardTitle, CCol, CContainer, CRow } from '@coreui/react';
+import { CCardTitle, CCol, CContainer, CFormLabel, CRow } from '@coreui/react';
 import companiesService from '../../services/companiesService'; 
 import dashboardsService from '../../services/dashboardsService'; 
 import MyDataTable from '@/component/MyDataTable';
@@ -13,6 +13,7 @@ const Dashboard = () => {
     const [sessionValue] = useAtom(sessionV);
     const [employeesValue, setEmployeeV] = useAtom(employeeV);
     const [dashboardCountValue, setDashboardCountV] = useAtom(dashboardCountV);
+    const [dashboardConditionValue, setDashboardConditionV] = useState([]);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -45,6 +46,10 @@ const Dashboard = () => {
                 try {
                     const dashboardData = await dashboardsService.fetchDashboardData(tokenValue);
                     setDashboardCountV(dashboardData.data);
+
+                    const dashboarConditions = await dashboardsService.fetchDashboardCountCondition(tokenValue);
+                    setDashboardConditionV(dashboarConditions.data);
+
                 } catch (err) {
                     setError(err.message);
                 } finally {
@@ -56,7 +61,7 @@ const Dashboard = () => {
         };
 
         fetchDashboardData();
-    }, [dashboardCountValue]);
+    }, [dashboardCountValue,dashboardConditionValue]);
 
     const handleDelete = () => {
         // Implement delete functionality
@@ -78,8 +83,16 @@ const Dashboard = () => {
                     </CCol>
                 </CRow>
 
+                <CRow className='mt-3'>
+                {dashboardConditionValue.map((dt,i) => {
+                    return <React.Fragment key={i}>
+                        <MyCounter number={dt.count} btn={false} title={dt.conditionName} />
+                    </React.Fragment>
+                    })}
+                </CRow>
 
                 <hr className='border'/>
+                
                 <CRow className='mt-4'>
                     {employeesValue || dashboardCountValue ?
                         <CCol md={3}>
@@ -101,15 +114,25 @@ const Dashboard = () => {
                         :
                     ''
                     }
+                    
                     <CCol md={9}>
+                    <div className='boxcontainer p-3'>
+                        <CFormLabel>Company Latest</CFormLabel>
+                        
                         {employeesValue && (
-                            <MyDataTable
-                                data={employeesValue.length > 0 ? employeesValue : []}
-                                onDelete={handleDelete}
-                                onView={handleView}
-                            />
+                            <>
+                            <div className='table-responsive'>
+                                <MyDataTable
+                                    data={employeesValue.length > 0 ? employeesValue : []}
+                                    onDelete={handleDelete}
+                                    onView={handleView}
+                                    />
+                            </div>
+                            </>
                         )}
+                    </div>
                     </CCol>
+
                 </CRow>
             </CContainer>
         </div>

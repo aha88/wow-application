@@ -34,9 +34,7 @@ const Companyid = ({ userOne }) => {
                 <CRow className='mt-3'>
                     <CCol md={12}>
                         <CCardTitle> 
-                            <h1>
                                 {compUserValue.name}
-                                </h1>
                                  <small>{compUserValue.registration_number}</small>
                         </CCardTitle>
                     </CCol>

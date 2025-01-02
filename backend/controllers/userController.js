@@ -70,11 +70,33 @@ const getUserId = async (req, res) => {
   const id = req.params.id;
   
   try {
-    const user = await db('users').select('*').where({id});
+    const user = await db('users').select('users.*',
+      'roles.name as roles_name',
+      'status_code.name as status_name',
+    )
+    .join('status_code', 'status_code.id', 'users.status')
+    .join('roles', 'roles.id', 'users.role_id')
+    .where({'users.id': id});
+
+
+    const transformeduser = user.map(usr => ({
+      id: usr.id,
+      name: usr.name,
+      email: usr.email,
+      role: {
+        role_id: usr.role_id,
+        role_name: usr.roles_name,
+      },      
+      status: {
+        status_id: usr.status,
+        status_name: usr.status_name,
+      },    
+    }))
+
     const data= [{
       'status': res.statusCode,
-      'data': user,
-      'lenght': user.length
+      'data': transformeduser,
+      'lenght': transformeduser.length
       
     }];
 

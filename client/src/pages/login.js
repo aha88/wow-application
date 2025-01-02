@@ -17,7 +17,7 @@ export default function Login() {
   const [personDT, setPersonDT] = useAtom(userData);
   const [userIdentifier, setUserIdentifier] = useAtom(userID);
   const [token, setToken] = useAtom(tokenV);
-  const [sessionActive, setSessionActive] = useAtom(sessionV);
+  const [sessionValue, setSessionActive] = useAtom(sessionV);
  
 
   const schema = Joi.object({
@@ -72,17 +72,18 @@ export default function Login() {
     }));
   };
 
-  if(sessionActive){
-
-   return setTimeout(async () => {
-      await router.push('./dashboard/Dashboard');
-    }, 100);
-  }
+ 
 
   return (
     <div className='body'>
-      <div className='box-container'>
-        <CCardTitle className='text-black'>Login</CCardTitle>
+      <div className='box-container text-black'>
+        <>
+          <h2 className='text-danger'>WOW</h2>
+          <small><i>Empowering Wellness,Transforming Lives</i></small>
+        </>
+        <hr/>
+
+        <CCardTitle className='text-black mt-4 mb-3'>Login</CCardTitle>
 
         {/* Display validation or API errors */}
         {validationError && <p className="text-danger">{validationError}</p>}
@@ -115,7 +116,7 @@ export default function Login() {
           </CCol>
           <CCol>
             <CButton type='submit' color='primary' className='mb-3'>
-              Submit
+              Sign in
             </CButton>
           </CCol>
         </CForm>
