@@ -7,11 +7,11 @@ import { cilArrowThickRight } from '@coreui/icons';
 const MyCounter = ({title,number, btn, classColorName, mdSize}) => {
   return (
     <CCol md={mdSize} >
-      <div className={`boxcontainer bg-white-border p-2 ${classColorName}`}>
-        <div className='top'>
+      <div className={`boxcontainer-opacity bg-white-border p-2 ${classColorName}`}>
+        <>
           <>{title}</>
           <h2>{number}</h2>
-        </div>
+        </>
         {btn ?
         <>
         <div className='border-top-1 text-right p-2 d-flex flex-row-reverse'>

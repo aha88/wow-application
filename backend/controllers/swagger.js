@@ -229,7 +229,7 @@
  
 
 //----------------------------------------------------------------------------------------------------------------------------------------//
-//                   **Employee**                                                                                                             //
+//                   **Employee**                                                                                                         //
 //----------------------------------------------------------------------------------------------------------------------------------------//
 
 /**
@@ -272,7 +272,7 @@
  */
 
 //----------------------------------------------------------------------------------------------------------------------------------------//
-//                   **Company**                                                                                                             //
+//                   **Company**                                                                                                          //
 //----------------------------------------------------------------------------------------------------------------------------------------//
 
 /**
@@ -316,7 +316,7 @@
  */
 
 //----------------------------------------------------------------------------------------------------------------------------------------//
-//                   **Dashboard**                                                                                                             //
+//                   **Dashboard**                                                                                                        //
 //----------------------------------------------------------------------------------------------------------------------------------------//
 
 /**
@@ -372,4 +372,76 @@
  *         description: Success Retretive
  *       403:
  *         description: Unauthorized request
+ */
+
+//----------------------------------------------------------------------------------------------------------------------------------------//
+//                   **Events**                                                                                                           //
+//----------------------------------------------------------------------------------------------------------------------------------------//
+
+/**
+ * @swagger
+ * /api/events/upload-pic/{id}:
+ *   post:
+ *     summary: Upload a file to the server
+ *     tags:
+ *       - Events
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: The ID of the company
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: The file to upload
+ *     responses:
+ *       200:
+ *         description: File uploaded successfully
+ *       400:
+ *         description: Bad request or validation error
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /api/events/upload-cert/{id}:
+ *   post:
+ *     summary: Upload a file to the server
+ *     tags:
+ *       - Events
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: The ID of the company
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: The file to upload
+ *     responses:
+ *       200:
+ *         description: File uploaded successfully
+ *       400:
+ *         description: Bad request or validation error
+ *       500:
+ *         description: Internal server error
  */

@@ -75,7 +75,6 @@ const Dashboard = () => {
     if (error) return <p className="text-danger">{error}</p>;
 
     return (<>
-        <div className='body'>
             <CContainer className='mt-3'>
                 <CRow className='mt-3'>
                     <CCol md={12}>
@@ -115,13 +114,13 @@ const Dashboard = () => {
                     ''
                     }
                     
-                    <CCol md={9}>
-                    <div className='boxcontainer p-3'>
-                        <CFormLabel>Company Latest</CFormLabel>
-                        
+                    <CCol md={9} className='mb-4'>
+                    <div className='boxcontainer p-3 text-black'>
+                        <CCardTitle>Company Latest</CCardTitle>
+
                         {employeesValue && (
                             <>
-                            <div className='table-responsive'>
+                            <div className='table-responsive mt-3'>
                                 <MyDataTable
                                     data={employeesValue.length > 0 ? employeesValue : []}
                                     onDelete={handleDelete}
@@ -135,7 +134,6 @@ const Dashboard = () => {
 
                 </CRow>
             </CContainer>
-        </div>
         </>);
 };
 

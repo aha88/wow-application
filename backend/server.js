@@ -1,38 +1,42 @@
-// app.js or index.js
-require('dotenv').config();  
+require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-const port = process.env.APP_PORT || 3000;  
-const bodyParser = require('body-parser');  
-const myRoutes = require('./routes/myRoutes');
-const app = express();
+const path = require('path');
+const bodyParser = require('body-parser');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const myRoutes = require('./routes/myRoutes');
 
-// Import and use routes
+const port = process.env.APP_PORT || 3000;
+const app = express();
+
+// Middleware for body parsing
 app.use(bodyParser.json());
 
-//routes
-app.use('/',myRoutes);
-
-// cors
+// Enable CORS
 app.use(cors());
 
-// Swagger definition
+// Serve static assets
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+
+// Routes
+app.use('/', myRoutes);
+
+// Swagger setup
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
     title: 'API',
     version: '1.0.0',
-    description: 'OpenAPI to make',
+    description: 'OpenAPI for assets and API routes',
   },
   servers: [
     {
-      url: `http://localhost:${port}`, 
+      url: `http://localhost:${port}`,
     },
     {
-      url: `https://localhost:${port}`, 
+      url: `https://localhost:${port}`,
     },
   ],
   components: {
@@ -40,7 +44,7 @@ const swaggerDefinition = {
       xTokenAuth: {
         type: 'apiKey',
         in: 'header',
-        name: 'x-token',  
+        name: 'x-token',
         description: 'Custom header for API token',
       },
     },
@@ -52,17 +56,16 @@ const swaggerDefinition = {
   ],
 };
 
-
 const options = {
   swaggerDefinition,
-  apis: ['./controllers/*.js'],  // Path to your controller files
+  apis: ['./controllers/*.js'], // Path to controller files
 };
-
 
 const swaggerSpec = swaggerJsdoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-
+// Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Assets are accessible at http://localhost:${port}/assets/`);
 });

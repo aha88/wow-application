@@ -9,3 +9,5 @@ backend/seeds/create_seed_condition_type.js
 backend/seeds/create_seed_type_checkup.js
 backend/seeds/seed_companies.js
 backend/seeds/seed_employee.js
+backend/assets/events/*
+backend/assets/certificate/*
