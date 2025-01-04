@@ -6,7 +6,6 @@ import '@/styles/mystyle.scss';
 import '@/styles/index.scss';
 import { Footer } from '@/component/footer';
 import { Header }  from '@/component/header';
-import { Sidebar } from '@/component/Sidebar';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { sessionV, userData } from '../store/authuser';
 import { useAtom } from 'jotai';
@@ -20,18 +19,19 @@ export default function App({ Component, pageProps: { ...pageProps }, }) {
   if(sessionValue == true ) {
     return (<div className='body'>
       <Header data={personDT} className='absolute-position' />
-      <div className="dashboard-container">
-        <div className="dashboard-content">
-          <Component {...pageProps} />
+        <div className="dashboard-container">
+          <div className="dashboard-content">
+            <Component {...pageProps} />
+          </div>
         </div>
-      </div><Footer />
-      </div>)
+      <Footer />
+    </div>);
   }else{
     return (<div className='body'>
       <Header data={personDT} />
-      <Component {...pageProps} />
+        <Component {...pageProps} />
       <Footer />
-      </div>)
+    </div>)
   }
 
 }

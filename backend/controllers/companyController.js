@@ -62,7 +62,6 @@ const getCompanyDetailsID = async (req, res) => {
               'companies.email as company_email',
               'companies.status as company_status',
               'status_code.name as status_name'
-
           )
           .join('status_code', 'status_code.id', 'company_status')
             .where('company_id', id );

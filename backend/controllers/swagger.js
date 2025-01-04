@@ -445,3 +445,225 @@
  *       500:
  *         description: Internal server error
  */
+
+/**
+ * @swagger
+ * /api/events/add-events:
+ *   post:
+ *     summary: Upload a file to the server
+ *     tags:
+ *       - Events
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - company_id
+ *               - details
+ *               - status
+ *             properties:
+ *               company_id:
+ *                 type: integer
+ *                 example: 1
+ *               details:
+ *                 type: string
+ *                 example: "aizat com"
+ *               status:
+ *                 type: integer
+ *                 example: 1
+ *     responses:
+ *       200:
+ *         description: Add submit successfully
+ *       400:
+ *         description: Bad request or validation error
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /api/events/add-attandance:
+ *   post:
+ *     summary: Add attendance from company event
+ *     tags:
+ *       - Events
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               -  name
+ *               -  bod
+ *               -  email
+ *               -  phone
+ *               -  whatapps
+ *               -  telegram
+ *               -  role_id
+ *               -  company_id
+ *               -  height
+ *               -  weight
+ *               -  registration_date
+ *               -  gender
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Aizat"
+ *               bod:
+ *                 type: string
+ *                 example: "1992-12-12"
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "aizat@rms"
+ *               phone:
+ *                 type: string
+ *                 example: "123456789"
+ *               whatapps:
+ *                 type: string
+ *                 example: "123456789"
+ *               telegram:
+ *                 type: string
+ *                 example: "123456789"
+ *               role_id:
+ *                 type: integer
+ *                 example: 1    
+ *               company_id:
+ *                 type: integer
+ *                 example: 1
+ *               height:
+ *                 type: string
+ *                 example: "170"
+ *               weight:
+ *                 type: string
+ *                 example: "70"
+ *               registration_date:
+ *                 type: string
+ *                 example: "2022-12-12"
+ *     responses:
+ *       200:
+ *         description: Add submit successfully
+ *       400:
+ *         description: Bad request or validation error
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /api/events/update-attandance/{id}:
+ *   put:
+ *     summary: Update attendance from company event
+ *     tags:
+ *       - Events
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: The ID of the company
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               -  name
+ *               -  bod
+ *               -  email
+ *               -  phone
+ *               -  whatapps
+ *               -  telegram
+ *               -  role_id
+ *               -  company_id
+ *               -  height
+ *               -  weight
+ *               -  registration_date
+ *               -  gender
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Aizat"
+ *               bod:
+ *                 type: string
+ *                 example: "1992-12-12"
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "aizat@rms"
+ *               phone:
+ *                 type: string
+ *                 example: "123456789"
+ *               whatapps:
+ *                 type: string
+ *                 example: "123456789"
+ *               telegram:
+ *                 type: string
+ *                 example: "123456789"
+ *               role_id:
+ *                 type: integer
+ *                 example: 1    
+ *               company_id:
+ *                 type: integer
+ *                 example: 1
+ *               height:
+ *                 type: string
+ *                 example: "170"
+ *               weight:
+ *                 type: string
+ *                 example: "70"
+ *               registration_date:
+ *                 type: string
+ *                 example: "2022-12-12"
+ *     responses:
+ *       200:
+ *         description: update successfully
+ *       400:
+ *         description: Bad request or validation error
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /api/events/update-events/{id}:
+ *   put:
+ *     summary: Update attendance from company event
+ *     tags:
+ *       - Events
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: The ID of the company
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               -  details
+ *               -  status
+ *             properties:
+ *               details:
+ *                 type: string
+ *                 example: "Aizat"
+ *               status:
+ *                 type: integer
+ *                 example: 1
+ *     responses:
+ *       200:
+ *         description: update successfully
+ *       400:
+ *         description: Bad request or validation error
+ *       500:
+ *         description: Internal server error
+ */

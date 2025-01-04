@@ -1,6 +1,8 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const db = require('../db');
+
 
 // Constants for file upload
 const UPLOADIMG_DIR = path.join(__dirname, '../assets/events');
@@ -40,9 +42,6 @@ const storagePDF = multer.diskStorage({
     },
 });
 
-
-
-
 const uploadIMG = multer({
     storageIMG,
     limits: { fileSize: MAX_FILE_SIZE },
@@ -69,7 +68,18 @@ const uploadPDF = multer({
     },
 });
 
+const auditTrails = async (description, company_id, user_id) => {
+    const audit = {
+        description,
+        company_id,
+        user_id,
+    };
+
+    return await db('activities').insert(audit);
+}
+
 module.exports = {
     uploadIMG,
-    uploadPDF
+    uploadPDF,
+    auditTrails
 };

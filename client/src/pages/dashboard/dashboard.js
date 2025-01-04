@@ -41,11 +41,30 @@ const Dashboard = () => {
 
     useEffect(() => {
         const fetchDashboardData = async () => {
-            if (dashboardCountValue?.length === 0) {
+            if (dashboardCountValue?.length === 0 || dashboardCountValue == null) {
                 setLoading(true);
                 try {
                     const dashboardData = await dashboardsService.fetchDashboardData(tokenValue);
                     setDashboardCountV(dashboardData.data);
+
+                } catch (err) {
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                }
+            } else {
+                setLoading(false);
+            }
+        };
+
+        fetchDashboardData();
+    }, [dashboardCountValue]);
+   
+    useEffect(() => {
+        const fetchDashboardData = async () => {
+            if (dashboardConditionValue?.length === 0 || dashboardConditionValue == null) {
+                setLoading(true);
+                try {
 
                     const dashboarConditions = await dashboardsService.fetchDashboardCountCondition(tokenValue);
                     setDashboardConditionV(dashboarConditions.data);
@@ -61,7 +80,7 @@ const Dashboard = () => {
         };
 
         fetchDashboardData();
-    }, [dashboardCountValue,dashboardConditionValue]);
+    }, [dashboardConditionValue]);
 
     const handleDelete = () => {
         // Implement delete functionality
@@ -100,14 +119,14 @@ const Dashboard = () => {
                                 number={employeesValue?.length || 0}
                                 btn={false}
                                 mdSize={12}
-                                classColorName="bg-light text-dark text-center font-weight-bold"
+                                classColorName="bg-light text-dark text-center "
                             />
                             <MyCounter
                                 title="TOTAL OF EMPLOYEE SIGNUP"
                                 number={dashboardCountValue[1]?.all_employee_count || 0}
                                 btn={false}
                                 mdSize={12}
-                                classColorName="bg-dark text-light text-center font-weight-bold"
+                                classColorName="bg-dark text-light text-center"
                             />
                         </CCol>
                         :
