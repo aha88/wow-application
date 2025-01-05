@@ -1,48 +1,53 @@
-import React, { useMemo } from 'react';
-import { useTable, useSortBy } from 'react-table';
+import React from 'react';
+import DataTable from 'react-data-table-component';
 import { CBadge, CButton } from '@coreui/react';
 import Swal from 'sweetalert2';
 
 const MyDataTable = ({ data, onDelete, onView }) => {
-  // Memoize the columns to prevent unnecessary re-renders
-  const columns = useMemo(
-    () => [
-      { Header: 'ID', accessor: 'id' },
-      { Header: 'Name', accessor: 'name' },
-      { Header: 'Email', accessor: 'email' },
-      {
-        Header: 'Status',
-        Cell: ({ row }) => {
-          const { status } = row.original;  
-          if (!status) return null;  
+  
+  // Define columns
+  const columns = [
+    { name: 'ID', selector: row => row.id, sortable: true, width: '100px' },
+    { name: 'Name', selector: row => row.name, sortable: true, wrap: true },
+    { name: 'Email', selector: row => row.email, sortable: true, wrap: true },
+    {
+      name: 'Status',
+      selector: row => row.status?.id,
+      cell: row => {
+        if (!row.status) return null;
 
-          // Map status ID to a badge
-          const statusMapping = {
-            1: { color: 'success', text: 'Approved' },
-            2: { color: 'warning', text: 'Pending' },
-            3: { color: 'danger', text: 'Rejected' },
-          };
+        const statusMapping = {
+          1: { color: 'success', text: 'Approved' },
+          2: { color: 'warning', text: 'Pending' },
+          3: { color: 'danger', text: 'Rejected' },
+        };
 
-          const { color, text } = statusMapping[status.id] || {};
-          return color ? <CBadge color={color}>{text}</CBadge> : null;
-        },
+        const { color, text } = statusMapping[row.status.id] || {};
+        return color ? <CBadge color={color}>{text}</CBadge> : null;
       },
-      {
-        Header: 'Actions',
-        Cell: ({ row }) => (
-          <div>
-            <CButton className="mr-2" color="secondary" onClick={() => onView(row.original)}>
-              View
-            </CButton>
-            <CButton className="mr-2" color="danger" onClick={() => confirmDelete(row.original)}>
-              Delete
-            </CButton>
-          </div>
-        ),
-      },
-    ],
-    [onView, onDelete]
-  );
+      sortable: true,
+      width: '150px',
+    },
+    {
+      name: 'Actions',
+      cell: row => (
+        <div className="d-flex justify-content-end">
+        <CButton className="mr-2" color="secondary" size="sm" onClick={() => onView(row)}>
+          View
+        </CButton>
+        {onDelete && (
+          <CButton className="mr-2" color="danger" size="sm" onClick={() => confirmDelete(row)}>
+            Delete
+          </CButton>
+        )}
+      </div>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+      width: '180px',
+    },
+  ];
 
   // Confirm delete action
   const confirmDelete = (item) => {
@@ -64,7 +69,6 @@ const MyDataTable = ({ data, onDelete, onView }) => {
   // Handle delete action
   const handleDelete = async (item) => {
     try {
-      // Simulate delete operation (replace with actual API call if needed)
       console.log('Deleting item:', item);
 
       Swal.fire({
@@ -75,7 +79,7 @@ const MyDataTable = ({ data, onDelete, onView }) => {
         timer: 1500,
       });
 
-      onDelete(item); // Notify parent component
+      onDelete(item);
     } catch (error) {
       console.error('Error during delete operation:', error);
       Swal.fire({
@@ -86,43 +90,36 @@ const MyDataTable = ({ data, onDelete, onView }) => {
     }
   };
 
-  // Use react-table hooks
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
-    { columns, data },
-    useSortBy
-  );
-
   return (
-    <table {...getTableProps()} className="table table-striped table-hover">
-      <thead>
-        {headerGroups.map((headerGroup, index) => (
-          <tr {...headerGroup.getHeaderGroupProps()} key={index}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps(column.getSortByToggleProps())} key={column.id}>
-                {column.render('Header')}
-                <span>
-                  {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
-                </span>
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row, index) => {
-          prepareRow(row);
-          return (
-            <tr {...row.getRowProps()} key={index}>
-              {row.cells.map((cell, index) => (
-                <td {...cell.getCellProps()} key={index}>
-                  {cell.render('Cell')}
-                </td>
-              ))}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+      <DataTable
+        columns={columns}
+        data={data}
+        pagination
+        highlightOnHover
+        striped
+        responsive
+        fixedHeader
+        customStyles={{
+          tableWrapper: {
+            style: {
+              overflowX: 'auto',
+            },
+          },
+          pagination: {
+            style: {
+              color: 'gray', 
+            },
+          },
+          paginationStyle: {
+            select: {
+              style: {
+                color: 'gray',  
+              },
+            },
+          },
+        }}
+        fixedHeaderScrollHeight="400px"
+      />
   );
 };
 

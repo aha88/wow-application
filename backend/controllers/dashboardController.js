@@ -3,14 +3,14 @@ const db = require('../db');
 // div counter
 const counterContainer = async (req, res) => {
     try {
-        const employeeCounts = await db('employees')
+        const employeeCounts = await db('attendances')
         .select(
           'company_id',
           db.raw('COUNT(*) as count')
         )
         .groupBy('company_id');
       
-        const totalEmployees = await db('employees')
+        const totalEmployees = await db('attendances')
             .count('* as total')
             .first();
         

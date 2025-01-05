@@ -135,17 +135,14 @@ const Dashboard = () => {
                     
                     <CCol md={9} className='mb-4'>
                     <div className='boxcontainer p-3 text-black'>
-                        <CCardTitle>Company Latest</CCardTitle>
+                        <CCardTitle className='mb-3'>Company Latest</CCardTitle>
 
                         {employeesValue && (
                             <>
-                            <div className='table-responsive mt-3'>
                                 <MyDataTable
                                     data={employeesValue.length > 0 ? employeesValue : []}
-                                    onDelete={handleDelete}
                                     onView={handleView}
                                     />
-                            </div>
                             </>
                         )}
                     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { CButton, CCardTitle, CCol, CForm, CFormInput, CInputGroup } from '@coreui/react';
 import Joi from 'joi';
 import { useRouter } from 'next/router';
@@ -72,6 +72,11 @@ export default function Login() {
     }));
   };
 
+  useEffect(() => {
+    if (sessionValue) {
+      router.push('/dashboard/Dashboard');
+    }
+  }, []);
  
 
   return (
