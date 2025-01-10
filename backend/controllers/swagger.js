@@ -667,3 +667,26 @@
  *       500:
  *         description: Internal server error
  */
+
+/**
+ * @swagger
+ * /api/events/{id}:
+ *   get:
+ *     summary: Retrieve all by condition base on company 
+ *     tags:
+ *       - Events
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: The ID of the company
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - xTokenAuth: []   
+ *     responses:
+ *       200:
+ *         description: Success Retretive
+ *       403:
+ *         description: Unauthorized request
+ */

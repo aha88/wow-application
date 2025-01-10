@@ -8,6 +8,8 @@ import axios from 'axios';
 import { tokenV, userData, userID, sessionV } from "../store/authuser";
 import { useAtom } from 'jotai';
 import Cookies from 'js-cookie';
+import Image from 'next/image';
+import logo from '../assets/logo.jpeg';
 
 export default function Login() {
   const router = useRouter();
@@ -55,7 +57,7 @@ export default function Login() {
       Cookies.set('token', token, { expires: 1, secure: true, sameSite: 'Strict' });
 
       setTimeout(async () => {
-        await router.push('./dashboard/Dashboard');
+        await router.push('./Dashboard');
       }, 100);
     
     } catch (err) {
@@ -74,7 +76,7 @@ export default function Login() {
 
   useEffect(() => {
     if (sessionValue) {
-      router.push('/dashboard/Dashboard');
+      router.push('./dashboard/Dashboard');
     }
   }, []);
  
@@ -83,8 +85,10 @@ export default function Login() {
     <div className='body'>
       <div className='box-container text-black'>
         <>
-          <h2 className='text-danger'>WOW</h2>
-          <small><i>Empowering Wellness,Transforming Lives</i></small>
+          <Image src={logo} alt='logo' width={100} height={100} />
+          <div>
+            <small><i>Empowering Wellness,Transforming Lives</i></small>
+          </div>
         </>
         <hr/>
 

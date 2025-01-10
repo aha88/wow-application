@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { useAtom } from 'jotai';
 import { cilSpeedometer, cilLayers, cilVector,cilMenu} from '@coreui/icons';
 import CIcon from '@coreui/icons-react';
+import Cookies from 'js-cookie';
 
 export const Header = (data) => {
   const router = useRouter();
@@ -18,6 +19,13 @@ export const Header = (data) => {
   const [tokenValue, setTokenV] = useAtom(tokenV);
   const [sessionValue, setSessionV] = useAtom(sessionV);
 
+  useEffect(() => {
+    const cookieLive = Cookies.get('token');
+
+    if(!sessionValue && cookieLive ) { 
+        router.push('/');
+    }
+  }, []);
  
   // Handle sign out
   const signOut = () => {

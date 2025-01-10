@@ -12,6 +12,7 @@ const userAccessPass = require('../middleware/UserAccessPass');
  router.post('/events/add-attandance', authenticateToken,verifyUser, eventsController.addAttendance); 
  router.put('/events/update-attandance/:id', authenticateToken,verifyUser, eventsController.updateAttendance); 
  router.put('/events/update-events/:id', authenticateToken,verifyUser, eventsController.updateEvents); 
+ router.get('/events/:id', authenticateToken,verifyUser, eventsController.eventCompanyID); 
  
 
 module.exports = router;

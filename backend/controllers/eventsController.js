@@ -266,6 +266,28 @@ const uploadFilePDF =  async(req, res) => {
     });
 };
 
+
+// get event by id
+const eventCompanyID = async (req, res) => {
+    const id = req.params.id
+    try {
+        const companies = await db('events')
+            .where('company_id', id );
+      
+            const dt = {
+              status: res.statusCode,
+              data: companies,
+              length: companies.length,
+            };
+        
+        res.json(dt);
+    
+      } catch (error) {
+        console.error('Error retrieving event:', error);
+        res.status(500).json('event not found');
+      }
+  };
+
 module.exports = {
     addEvents,
     addAttendance,
@@ -273,6 +295,6 @@ module.exports = {
     updateEvents,
     uploadFilePDF,
     uploadFileIMG,
-
+    eventCompanyID
 
 };

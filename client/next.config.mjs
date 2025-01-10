@@ -3,7 +3,7 @@
 const nextConfig = {
     env: {
         API_URL: 'http://localhost:3000',
-        BE_URL: "http://localhost:5000"
+        BE_URL: "http://localhost:4000"
     },
     webpack(config) {
         config.resolve.modules.push('./src');

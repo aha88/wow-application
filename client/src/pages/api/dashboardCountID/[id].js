@@ -1,18 +1,18 @@
 export default async function handler(req, res) {
-    try {
-        
+    const id = req.query.id
+    console.log(id);
+        try {
         const token = req.headers['x-token']
-        
-        const response = await fetch(`${process.env.BE_URL}/api/customer/add`, {
-              method: 'POST',
-              headers: {
+        const response = await fetch(`${process.env.BE_URL}/api/dashboard-company-count/${id}`, {
+            method: 'GET',
+            headers: {
                 'Content-Type': 'application/json',
                 'x-token':token
-             },
-             body: JSON.stringify(req.body)
+            }
         });
         const data = await response.json();
-        res.json(data);
+        
+        return res.json(data);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
