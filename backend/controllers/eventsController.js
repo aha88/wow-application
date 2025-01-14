@@ -271,13 +271,24 @@ const uploadFilePDF =  async(req, res) => {
 const eventCompanyID = async (req, res) => {
     const id = req.params.id
     try {
-        const companies = await db('events')
-            .where('company_id', id );
-      
+        const companiesEvents = await db('events')
+    .select('id as event_id', 'company_id', 'details', 'status', 'venue', 'date', 'time')
+    .where('company_id', id );
+ 
+    const transformedEvent = companiesEvents.map(event => ({
+        event_id: event.event_id,
+        company_id: event.company_id,
+        details: event.details,
+        venue: event.venue,
+        date: event.date,
+        time: event.time,
+        status: event.status,
+    }))
+
             const dt = {
               status: res.statusCode,
-              data: companies,
-              length: companies.length,
+              data: transformedEvent,
+              length: transformedEvent.length,
             };
         
         res.json(dt);

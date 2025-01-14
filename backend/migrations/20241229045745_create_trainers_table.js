@@ -5,16 +5,15 @@
 exports.up = function (knex) {
     return knex.schema.createTable("trainers", function (table) {
       table.increments("id").primary();
-      table.string("event_id");
+      table.string("type");
       table.string("company_id");
-      table.string("trainer_name");
-      table.string("designation");
-      table.string("title");
-  
+      table.string("user_id");
+      table.string("status");
+      
       table
-        .foreign("event_id")
+        .foreign("user_id")
         .references("id")
-        .inTable("events")
+        .inTable("users")
         .onDelete("CASCADE");
       table
         .foreign("company_id")

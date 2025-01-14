@@ -19,10 +19,11 @@ const getAllCompanies = async (req, res) => {
               'status_code.name as status_name'
           )
           .join('status_code', 'status_code.id', 'company_status');
-      
+          
           const transformedCompany = companies.map(comp => ({
               id: comp.company_id,
               name: comp.company_name,
+              registration_number: comp.company_registration_number,
               email: comp.company_email,
               status: {
                 id: comp.company_status,

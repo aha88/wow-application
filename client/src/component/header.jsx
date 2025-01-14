@@ -10,6 +10,7 @@ import { useAtom } from 'jotai';
 import { cilSpeedometer, cilLayers, cilVector,cilMenu} from '@coreui/icons';
 import CIcon from '@coreui/icons-react';
 import Cookies from 'js-cookie';
+import Link from 'next/link';
 
 export const Header = (data) => {
   const router = useRouter();
@@ -93,12 +94,12 @@ export const Header = (data) => {
                     <CButton onClick={() => setVisible(true)}>  <CIcon customClassName="nav-icon" size='sm' height={25} width={25} icon={cilMenu} /> </CButton>
                   </CNavLink>
                   <CNavLink href="/">
-                    <CButton> WOW</CButton>
+                    <CButton className='text-danger fw-bolder'> WOW</CButton>
                   </CNavLink>
                 </CCollapse>
               :
-              <CNavLink href="/">
-                <CButton> WOW</CButton>
+              <CNavLink href="/dashboard/dashboard">
+                <CButton className='text-danger fw-bolder'> WOW</CButton>
               </CNavLink>
               
             }
@@ -130,19 +131,25 @@ export const Header = (data) => {
       <COffcanvas placement="end" visible={visible} onHide={() => setVisible(false)}>
         <COffcanvasHeader>Navigation</COffcanvasHeader>
         <COffcanvasBody>
-            <CNav>
-              <CSidebarNav>
-                  <CNavItem href="/dashboard/Dashboard">
-                    <CIcon customClassName="nav-icon" size='sm' height={50} width={50} icon={cilSpeedometer} /> Dashboard
-                  </CNavItem>
-                  <CNavItem href="/companies">
-                    <CIcon customClassName="nav-icon" size='sm' height={50} width={50} icon={cilVector} /> Companies
-                  </CNavItem>
-                  <CNavItem href={`/profile/${data.id}`}>
-                    <CIcon customClassName="nav-icon" size='sm' height={50} width={50} icon={cilLayers} /> Setting
-                  </CNavItem>
-                </CSidebarNav>
-            </CNav>
+          <CNav>
+            <CSidebarNav>
+              <Link href="/dashboard/Dashboard" passHref>
+                <CNavItem className="d-flex align-items-center py-2 hover:bg-gray-200">
+                  <CIcon customClassName="nav-icon" size="sm" height={50} width={50} icon={cilSpeedometer} /> Dashboard
+                </CNavItem>
+              </Link>
+              <Link href="/companies/lists" passHref>
+                <CNavItem className="d-flex align-items-center py-2 hover:bg-gray-200">
+                  <CIcon customClassName="nav-icon" size="sm" height={50} width={50} icon={cilVector} /> Companies
+                </CNavItem>
+              </Link>
+              <Link href={`/profile/${data.id}`} passHref>
+                <CNavItem className="d-flex align-items-center py-2 hover:bg-gray-200">
+                  <CIcon customClassName="nav-icon" size="sm" height={50} width={50} icon={cilLayers} /> Setting
+                </CNavItem>
+              </Link>
+            </CSidebarNav>
+          </CNav>
         </COffcanvasBody>
       </COffcanvas>
     </>

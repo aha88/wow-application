@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState,useEffect } from 'react';
-import { CButton, CCardTitle, CCol, CForm, CFormInput, CInputGroup } from '@coreui/react';
+import { CButton, CCardTitle, CCol, CForm, CFormInput, CInputGroup, CInputGroupText } from '@coreui/react';
 import Joi from 'joi';
 import { useRouter } from 'next/router';
 import axios from 'axios';
@@ -10,6 +10,8 @@ import { useAtom } from 'jotai';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import logo from '../assets/logo.jpeg';
+import { cilUser, cilLockLocked } from '@coreui/icons';
+import CIcon from '@coreui/icons-react';
 
 export default function Login() {
   const router = useRouter();
@@ -57,7 +59,7 @@ export default function Login() {
       Cookies.set('token', token, { expires: 1, secure: true, sameSite: 'Strict' });
 
       setTimeout(async () => {
-        await router.push('./Dashboard');
+        await router.push('./dashboard/dashboard');
       }, 100);
     
     } catch (err) {
@@ -76,7 +78,7 @@ export default function Login() {
 
   useEffect(() => {
     if (sessionValue) {
-      router.push('./dashboard/Dashboard');
+      router.push('./dashboard/dashboard');
     }
   }, []);
  
@@ -99,29 +101,39 @@ export default function Login() {
         {apiError && <p className="text-danger">{apiError}</p>}
 
         <CForm onSubmit={handleSubmit}>
-          <CCol>
-            <CInputGroup>
+          <CCol className='my-1'>
+            <CInputGroup className='flex-nowrap"'>
+
+              <CInputGroupText id="loging-wrapping">
+                <CIcon icon={cilUser} />
+              </CInputGroupText>
               <CFormInput
                 type='email'
                 name='email'
+                aria-description='login-wrapping'
                 value={formData.email}
                 placeholder='email@email.com'
-                className='inputtext'
+                onChange={handleInputChange}
+              />
+            </CInputGroup>
+          </CCol>
+          <CCol className='my-1'>
+            <CInputGroup className='flex-nowrap'>
+              <CInputGroupText  id="password-wrapping">
+                <CIcon icon={cilLockLocked} />
+              </CInputGroupText>
+              <CFormInput
+                type='password'
+                name='password'
+                aria-description='password-wrapping'
+                placeholder='****'
+                value={formData.password}
                 onChange={handleInputChange}
               />
             </CInputGroup>
           </CCol>
           <CCol>
-            <CInputGroup>
-              <CFormInput
-                type='password'
-                name='password'
-                placeholder='****'
-                value={formData.password}
-                className='inputtext'
-                onChange={handleInputChange}
-              />
-            </CInputGroup>
+            <CCardTitle className='text-black float-right fw-1 fs-6 my-1'>Forgot Password</CCardTitle>
           </CCol>
           <CCol>
             <CButton type='submit' color='primary' className='mb-3'>

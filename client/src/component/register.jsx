@@ -3,6 +3,7 @@
 import { CButton, CForm, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CFormFloating,CFormInput,CFormLabel } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
 
+
 const RegisterCustomer = ({onShow, closeShow, initialFields,handingSubmitCustomer}) => {
          const [formData, setFormData] = useState(initialFields.reduce((acc, field) => {
         acc[field.name] = '';
@@ -29,7 +30,7 @@ const RegisterCustomer = ({onShow, closeShow, initialFields,handingSubmitCustome
                 size="xl"
         >
             <CModalHeader>
-                <CModalTitle>New Customer</CModalTitle>
+                <CModalTitle>Registrtion User</CModalTitle>
             </CModalHeader>
             <CForm onSubmit={(e) => handingSubmitCustomer(e, formData)}>
 

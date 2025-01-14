@@ -24,4 +24,16 @@ const fetchCompanyID = async(token,id) => {
     }
 }
 
-export default { fetchCompaniesData,fetchCompanyID };
+const addCompany = async(token,data) => {
+    try {
+        const response = await axios.post('/api/companies',data, {   
+            headers: {
+                'x-token': token,   
+        }});
+        return response.data;   
+    } catch (error) {
+        throw new Error(error.response?.data?.error || 'Failed to fetch company data');
+    }
+}
+
+export default { fetchCompaniesData,fetchCompanyID,addCompany };

@@ -7,17 +7,18 @@ import '@/styles/index.scss';
 import { Footer } from '@/component/footer';
 import { Header }  from '@/component/header';
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { sessionV, userData } from '../store/authuser';
+import { sessionV, userData,dashboardCountV } from '../store/authuser';
 import { useAtom } from 'jotai';
 
 export default function App({ Component, pageProps: { ...pageProps }, }) {
 
   const [ personDT, setPersonDT] = useAtom(userData);
   const [sessionValue] = useAtom(sessionV);
+    const [dashboardCountValue, setDashboardCountV] = useAtom(dashboardCountV);
   
 
-  if(sessionValue == true ) {
-    return (<div className='body'>
+  if(sessionValue == true && (dashboardCountValue !== null && personDT !== null) ) {
+    return (<div>
       <Header data={personDT} className='absolute-position' />
         <div className="dashboard-container">
           <div className="dashboard-content">
@@ -27,7 +28,7 @@ export default function App({ Component, pageProps: { ...pageProps }, }) {
       <Footer />
     </div>);
   }else{
-    return (<div className='body'>
+    return (<div>
       <Header data={personDT} />
         <Component {...pageProps} />
       <Footer />

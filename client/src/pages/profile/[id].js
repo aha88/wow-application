@@ -6,6 +6,7 @@ import { CButton, CCard, CCardBody, CCardHeader, CCardText, CCardTitle, CCol, CC
 import Swal from 'sweetalert2';
 import { userData, tokenV } from "../../store/authuser";
 import { useAtom } from 'jotai';
+import LoadingPage from '@/component/LoadingPage';
 
 const Customer = ({ userOne }) => {
     const [model, setModel] = useState(false);
@@ -73,11 +74,7 @@ const Customer = ({ userOne }) => {
 
     
     if(personDT == null) {  
-        return (<CContainer className='mt-3'>
-            <CRow className='mt-5 mb-5'>
-                Loading...
-            </CRow>
-            </CContainer>)
+        return (<LoadingPage/>)
     }else{
         return (
             <div className='body'>

@@ -9,4 +9,6 @@ export const employeeV = atomWithStorage('employeeValue', []);
 
 
 export const compUser = atomWithStorage('compUserValue', []);
+export const companiesList = atomWithStorage('companiesListValue', []);
+
 export const dashboardCountV = atomWithStorage('dashboardCountValue', []);

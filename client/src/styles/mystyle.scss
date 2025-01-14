@@ -145,6 +145,19 @@ body {
     .table-responsive{
         height: 500px;
         overflow: scroll;
+
+    }
+    
+    .rdt_Pagination{
+        display: flex;
+        justify-items: first baseline;
+        select{
+            color: #666;
+
+            option {
+                color:#666
+              }
+        }
     }
 
     .nav-link {

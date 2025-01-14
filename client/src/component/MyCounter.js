@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { CCardTitle, CCol } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilArrowThickRight } from '@coreui/icons';
+import Link from 'next/link';
 
 
 const MyCounter = ({title,number, btn, classColorName, mdSize}) => {
@@ -12,14 +13,7 @@ const MyCounter = ({title,number, btn, classColorName, mdSize}) => {
           <CCardTitle className='border-bottom-0 lh-1'>{title}</CCardTitle>
           <h2>{number}</h2>
         </>
-        {btn ?<>
-          <div className='border-top-1 text-right p-2 d-flex flex-row-reverse'>
-            <a className='text-right'><small>View More <CIcon icon={cilArrowThickRight} size="sm" /> </small></a>
-          </div>
-        </>
-        :
-        ''
-      }
+        
       </div>
   </CCol>
 )

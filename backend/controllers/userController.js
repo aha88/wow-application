@@ -121,11 +121,10 @@ const addUserAccess = async (req, res) => {
     password,
     status,
     role_id,
+    phone,
   } = req.body;
 
   try {
-
- 
 
     const existing = await db('users')
     .select('*')
@@ -137,9 +136,11 @@ const addUserAccess = async (req, res) => {
 
   }else{
     
-    const user = { name: name,
+    const user = { 
+      name: name,
       email: email,
       status: status,
+      phone: phone,
       role_id: role_id,
     };
     const [id] =  await db('users').insert(user);
